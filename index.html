@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tactical OS V2.6</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,7 @@
         <!-- Header -->
         <header class="header">
             <div class="header-left">
-                <h1 class="title">TACTICAL OS V2.6</h1>
+                <h1 class="title">TACTICAL OS <span class="version">V2.6</span></h1>
                 <p class="subtitle">Command.</p>
             </div>
             <div class="header-right">
@@ -32,59 +32,60 @@
 
         <!-- Main Content -->
         <main class="main-content" id="mainContent">
-            <!-- Page: MAIN -->
+
+            <!-- ==================== PAGE: MAIN ==================== -->
             <div class="page active" id="page-main">
                 <!-- Data Cards Row -->
                 <div class="data-cards-row">
                     <div class="data-card card-vix">
                         <div class="card-header">
                             <span class="card-label">VIX</span>
-                            <span class="card-icon">↗</span>
+                            <span class="card-icon" id="vix-icon">&#8599;</span>
                         </div>
                         <div class="card-body">
-                            <span class="card-value" id="vix-value">19.23</span>
-                            <span class="card-change negative" id="vix-change">-1.33%</span>
+                            <span class="card-value" id="vix-value">--</span>
+                            <span class="card-change neutral" id="vix-change">loading</span>
                         </div>
                     </div>
                     <div class="data-card card-fng">
                         <div class="card-header">
-                            <span class="card-label">CNN F&G</span>
-                            <span class="card-icon">↗</span>
+                            <span class="card-label">CNN F&amp;G</span>
+                            <span class="card-icon">&#8599;</span>
                         </div>
                         <div class="card-body">
-                            <span class="card-value" id="fng-value">30</span>
+                            <span class="card-value" id="fng-value">--</span>
                             <span class="card-change neutral" id="fng-change">/100</span>
                         </div>
                     </div>
                     <div class="data-card card-usdtwd">
                         <div class="card-header">
                             <span class="card-label">USD/TWD</span>
-                            <span class="card-icon">↗</span>
+                            <span class="card-icon">&#8599;</span>
                         </div>
                         <div class="card-body">
-                            <span class="card-value" id="usdtwd-value">31.727</span>
-                            <span class="card-change positive" id="usdtwd-change">+0.003%</span>
+                            <span class="card-value" id="usdtwd-value">--</span>
+                            <span class="card-change neutral" id="usdtwd-change">loading</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Macro Terminal Preview -->
-                <div class="section-card macro-terminal">
+                <div class="section-card macro-terminal" id="macroPreviewCard">
                     <div class="section-border border-green"></div>
                     <div class="section-header">
                         <h2 class="section-title green">MACRO TERMINAL PREVIEW</h2>
                     </div>
                     <div class="macro-data">
                         <div class="macro-item">
-                            <span class="macro-label">US 10Y</span>
-                            <span class="macro-value" id="us10y-value">4.42%</span>
+                            <span class="macro-label">LATEST ANALYSIS</span>
+                            <span class="macro-value" id="macro-latest-count">41 videos</span>
                         </div>
                         <div class="macro-divider"></div>
                         <div class="macro-item">
-                            <span class="macro-label">PUT/CALL</span>
-                            <span class="macro-value" id="putcall-value">0.98</span>
+                            <span class="macro-label">CHANNELS</span>
+                            <span class="macro-value">Nicolas / Alan</span>
                         </div>
-                        <div class="macro-arrow">›</div>
+                        <div class="macro-arrow">&#8250;</div>
                     </div>
                 </div>
 
@@ -95,9 +96,9 @@
                         <h2 class="section-title yellow">DAILY MOTIVATION</h2>
                     </div>
                     <div class="motivation-content">
-                        <p class="quote" id="quote-text">"A lot of people say they want to be great, but they're not willing to make the sacrifices necessary to achieve greatness."</p>
-                        <p class="quote-zh" id="quote-zh">很多人說他們想要變得卓越，但他們不願意為了卓越做出必要的犧牲。（卓越是犧牲的選擇。）</p>
-                        <p class="quote-author" id="quote-author">— KOBE BRYANT</p>
+                        <p class="quote" id="quote-text">Loading...</p>
+                        <p class="quote-zh" id="quote-zh"></p>
+                        <p class="quote-author" id="quote-author"></p>
                     </div>
                 </div>
 
@@ -109,152 +110,221 @@
                     </div>
                     <div class="history-content">
                         <div class="history-main">
-                            <span class="history-year" id="history-year">1932</span>
+                            <span class="history-year" id="history-year">----</span>
                             <div class="history-text">
-                                <p class="history-event" id="history-event">First splitting of the atom using a particle accelerator.</p>
-                                <p class="history-event-zh" id="history-event-zh">首次使用粒子加速器分裂原子。</p>
+                                <p class="history-event" id="history-event">Loading...</p>
+                                <p class="history-event-zh" id="history-event-zh"></p>
                             </div>
-                        </div>
-                        <div class="history-footer">
-                            <span class="history-link" id="history-link">點擊查看中文詳細背景介紹</span>
-                            <span class="history-probe">PROBE ›</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Daily Trivia -->
                 <div class="section-card trivia-card">
-                    <div class="section-border border-multi"></div>
-                    <div class="section-header">
-                        <h2 class="section-title yellow">DAILY TRIVIA</h2>
-                    </div>
-                    <div class="trivia-content">
-                        <div class="trivia-icon">💡</div>
-                        <div class="trivia-text">
-                            <p class="trivia-fact" id="trivia-fact">On April 14, 1932, John Cockcroft and Ernest Walton split the atom (lithium) using a particle accelerator for the first time.</p>
-                            <p class="trivia-fact-zh" id="trivia-fact-zh">1932年4月14日，約翰·考克饒夫和歐內斯特·沃爾頓首次使用粒子加速器分裂了原子（鋰）。</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Page: MACRO -->
-            <div class="page" id="page-macro">
-                <div class="section-card macro-full">
-                    <div class="section-border border-green"></div>
-                    <div class="section-header">
-                        <h2 class="section-title green">MACRO TERMINAL</h2>
-                    </div>
-                    <div class="macro-grid">
-                        <div class="macro-grid-item">
-                            <span class="macro-label">US 10Y YIELD</span>
-                            <span class="macro-value-lg">4.42%</span>
-                        </div>
-                        <div class="macro-grid-item">
-                            <span class="macro-label">PUT/CALL RATIO</span>
-                            <span class="macro-value-lg">0.98</span>
-                        </div>
-                        <div class="macro-grid-item">
-                            <span class="macro-label">DXY INDEX</span>
-                            <span class="macro-value-lg">104.25</span>
-                        </div>
-                        <div class="macro-grid-item">
-                            <span class="macro-label">FED FUNDS RATE</span>
-                            <span class="macro-value-lg">4.50%</span>
-                        </div>
-                        <div class="macro-grid-item">
-                            <span class="macro-label">US CPI (YoY)</span>
-                            <span class="macro-value-lg">2.4%</span>
-                        </div>
-                        <div class="macro-grid-item">
-                            <span class="macro-label">US UNEMPLOYMENT</span>
-                            <span class="macro-value-lg">4.2%</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Page: INTEL -->
-            <div class="page" id="page-intel">
-                <div class="section-card intel-full">
                     <div class="section-border border-cyan"></div>
                     <div class="section-header">
-                        <h2 class="section-title cyan">INTEL BRIEFING</h2>
+                        <h2 class="section-title cyan">DAILY TRIVIA</h2>
                     </div>
-                    <div class="intel-list">
-                        <div class="intel-item">
-                            <span class="intel-time">08:30</span>
-                            <span class="intel-tag tag-market">MARKET</span>
-                            <span class="intel-text">US futures indicate lower open amid trade tensions</span>
-                        </div>
-                        <div class="intel-item">
-                            <span class="intel-time">09:15</span>
-                            <span class="intel-tag tag-fed">FED</span>
-                            <span class="intel-text">Fed officials signal patience on rate cuts</span>
-                        </div>
-                        <div class="intel-item">
-                            <span class="intel-time">10:00</span>
-                            <span class="intel-tag tag-geo">GEO</span>
-                            <span class="intel-text">EU trade negotiations enter critical phase</span>
-                        </div>
-                        <div class="intel-item">
-                            <span class="intel-time">11:30</span>
-                            <span class="intel-tag tag-tech">TECH</span>
-                            <span class="intel-text">AI chip demand continues to surge globally</span>
-                        </div>
-                        <div class="intel-item">
-                            <span class="intel-time">14:00</span>
-                            <span class="intel-tag tag-market">MARKET</span>
-                            <span class="intel-text">Asian markets mixed on economic data releases</span>
+                    <div class="trivia-content">
+                        <div class="trivia-text">
+                            <p class="trivia-fact" id="trivia-fact">Loading...</p>
+                            <p class="trivia-fact-zh" id="trivia-fact-zh"></p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Page: WEALTH -->
+            <!-- ==================== PAGE: MACRO ==================== -->
+            <div class="page" id="page-macro">
+                <div class="page-header-bar">
+                    <h2 class="page-title green">MACRO TERMINAL</h2>
+                    <p class="page-desc">Financial analysis from Nicolas Young &amp; Alan Chen</p>
+                </div>
+
+                <!-- Channel Filter -->
+                <div class="filter-bar">
+                    <button class="filter-btn active" data-filter="all">ALL (41)</button>
+                    <button class="filter-btn" data-filter="nicolas">Nicolas Young (26)</button>
+                    <button class="filter-btn" data-filter="alan">Alan Chen (15)</button>
+                </div>
+
+                <!-- Video List -->
+                <div class="video-list" id="macro-video-list">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- ==================== PAGE: INTEL ==================== -->
+            <div class="page" id="page-intel">
+                <div class="page-header-bar">
+                    <h2 class="page-title cyan">INTEL CENTER</h2>
+                    <p class="page-desc">AI &amp; Tech intelligence from Alex Finn (OpenBot)</p>
+                </div>
+
+                <!-- Video List -->
+                <div class="video-list" id="intel-video-list">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- ==================== PAGE: WEALTH ==================== -->
             <div class="page" id="page-wealth">
-                <div class="section-card wealth-full">
-                    <div class="section-border border-purple"></div>
-                    <div class="section-header">
-                        <h2 class="section-title purple">WEALTH TRACKER</h2>
+                <div class="page-header-bar">
+                    <h2 class="page-title purple">WEALTH &amp; RESOURCES</h2>
+                    <p class="page-desc">Knowledge base, media resources &amp; personal assets</p>
+                </div>
+
+                <!-- Knowledge Base Section -->
+                <div class="wealth-section">
+                    <div class="section-card">
+                        <div class="section-border border-purple"></div>
+                        <div class="section-header">
+                            <h3 class="section-title purple">KNOWLEDGE BASE</h3>
+                        </div>
+                        <div class="resource-grid">
+                            <div class="resource-card" onclick="toggleKnowledge('alan-chen')">
+                                <div class="resource-icon">&#128218;</div>
+                                <div class="resource-info">
+                                    <h4>Alan Chen Knowledge</h4>
+                                    <p>Science &amp; tech industry analysis</p>
+                                </div>
+                                <span class="resource-arrow">&#8250;</span>
+                            </div>
+                            <div class="knowledge-expand" id="kb-alan-chen"></div>
+
+                            <div class="resource-card" onclick="toggleKnowledge('hrbp')">
+                                <div class="resource-icon">&#128188;</div>
+                                <div class="resource-info">
+                                    <h4>HRBP 2026 Knowledge</h4>
+                                    <p>HR business partner insights</p>
+                                </div>
+                                <span class="resource-arrow">&#8250;</span>
+                            </div>
+                            <div class="knowledge-expand" id="kb-hrbp"></div>
+
+                            <div class="resource-card" onclick="toggleKnowledge('kneerecon')">
+                                <div class="resource-icon">&#129657;</div>
+                                <div class="resource-info">
+                                    <h4>Knee Recon Knowledge</h4>
+                                    <p>Knee reconstruction &amp; rehab</p>
+                                </div>
+                                <span class="resource-arrow">&#8250;</span>
+                            </div>
+                            <div class="knowledge-expand" id="kb-kneerecon"></div>
+
+                            <div class="resource-card" onclick="toggleKnowledge('daily')">
+                                <div class="resource-icon">&#128197;</div>
+                                <div class="resource-info">
+                                    <h4>Daily Memory (2026-03-28)</h4>
+                                    <p>Daily log &amp; notes</p>
+                                </div>
+                                <span class="resource-arrow">&#8250;</span>
+                            </div>
+                            <div class="knowledge-expand" id="kb-daily"></div>
+                        </div>
                     </div>
-                    <div class="wealth-grid">
-                        <div class="wealth-item">
-                            <span class="wealth-label">PORTFOLIO VALUE</span>
-                            <span class="wealth-value">—</span>
+                </div>
+
+                <!-- Rehab Videos Section -->
+                <div class="wealth-section">
+                    <div class="section-card">
+                        <div class="section-border border-orange"></div>
+                        <div class="section-header">
+                            <h3 class="section-title orange">REHAB VIDEOS</h3>
                         </div>
-                        <div class="wealth-item">
-                            <span class="wealth-label">TODAY P/L</span>
-                            <span class="wealth-value">—</span>
-                        </div>
-                        <div class="wealth-item">
-                            <span class="wealth-label">YTD RETURN</span>
-                            <span class="wealth-value">—</span>
-                        </div>
-                        <div class="wealth-item">
-                            <span class="wealth-label">CASH POSITION</span>
-                            <span class="wealth-value">—</span>
+                        <div class="resource-grid">
+                            <div class="resource-card">
+                                <div class="resource-icon">&#127939;</div>
+                                <div class="resource-info">
+                                    <h4>Rehab Video 1</h4>
+                                    <p>Account 1 (Yachenc702) - R2 Storage</p>
+                                </div>
+                                <span class="resource-badge">1.5 MB</span>
+                            </div>
+                            <div class="resource-card">
+                                <div class="resource-icon">&#127939;</div>
+                                <div class="resource-info">
+                                    <h4>Rehab Videos 1-5</h4>
+                                    <p>Account 2 (Ycc702) - R2 Storage</p>
+                                </div>
+                                <span class="resource-badge">5 files</span>
+                            </div>
                         </div>
                     </div>
-                    <p class="wealth-note">Connect your brokerage to enable wealth tracking.</p>
+                </div>
+
+                <!-- English Learning Section -->
+                <div class="wealth-section">
+                    <div class="section-card">
+                        <div class="section-border border-green"></div>
+                        <div class="section-header">
+                            <h3 class="section-title green">ENGLISH LEARNING</h3>
+                        </div>
+                        <div class="resource-grid">
+                            <div class="resource-card">
+                                <div class="resource-icon">&#127908;</div>
+                                <div class="resource-info">
+                                    <h4>Podcast Videos (6)</h4>
+                                    <p>Account 2 - English project/Podcast Video/</p>
+                                </div>
+                                <span class="resource-badge">~1.2 GB</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sports Section -->
+                <div class="wealth-section">
+                    <div class="section-card">
+                        <div class="section-border border-yellow"></div>
+                        <div class="section-header">
+                            <h3 class="section-title yellow">SPORTS &amp; FITNESS</h3>
+                        </div>
+                        <div class="resource-grid">
+                            <div class="resource-card">
+                                <div class="resource-icon">&#127936;</div>
+                                <div class="resource-info">
+                                    <h4>Basketball Shooting Range</h4>
+                                    <p>Account 2 - R2 Storage</p>
+                                </div>
+                                <span class="resource-badge">video</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
+
+        <!-- Video Detail Modal -->
+        <div class="modal-overlay" id="videoModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="modal-title"></h3>
+                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                </div>
+            </div>
+        </div>
 
         <!-- Bottom Navigation -->
         <nav class="bottom-nav">
             <div class="nav-items">
                 <button class="nav-item active" data-page="main">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                     MAIN
                     <span class="nav-dot"></span>
                 </button>
                 <button class="nav-item" data-page="macro">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
                     MACRO
                 </button>
                 <button class="nav-item" data-page="intel">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                     INTEL
                 </button>
                 <button class="nav-item" data-page="wealth">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                     WEALTH
                 </button>
             </div>
