@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tactical OS V2.6</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Ambient Background Glow -->
+        <div class="ambient-glow glow-1"></div>
+        <div class="ambient-glow glow-2"></div>
+        <div class="ambient-glow glow-3"></div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1 class="title">TACTICAL OS V2.6</h1>
+                <p class="subtitle">Command.</p>
+            </div>
+            <div class="header-right">
+                <div class="live-badge">
+                    <span class="live-dot"></span>
+                    LIVE
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <!-- Page: MAIN -->
+            <div class="page active" id="page-main">
+                <!-- Data Cards Row -->
+                <div class="data-cards-row">
+                    <div class="data-card card-vix">
+                        <div class="card-header">
+                            <span class="card-label">VIX</span>
+                            <span class="card-icon">↗</span>
+                        </div>
+                        <div class="card-body">
+                            <span class="card-value" id="vix-value">19.23</span>
+                            <span class="card-change negative" id="vix-change">-1.33%</span>
+                        </div>
+                    </div>
+                    <div class="data-card card-fng">
+                        <div class="card-header">
+                            <span class="card-label">CNN F&G</span>
+                            <span class="card-icon">↗</span>
+                        </div>
+                        <div class="card-body">
+                            <span class="card-value" id="fng-value">30</span>
+                            <span class="card-change neutral" id="fng-change">/100</span>
+                        </div>
+                    </div>
+                    <div class="data-card card-usdtwd">
+                        <div class="card-header">
+                            <span class="card-label">USD/TWD</span>
+                            <span class="card-icon">↗</span>
+                        </div>
+                        <div class="card-body">
+                            <span class="card-value" id="usdtwd-value">31.727</span>
+                            <span class="card-change positive" id="usdtwd-change">+0.003%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Macro Terminal Preview -->
+                <div class="section-card macro-terminal">
+                    <div class="section-border border-green"></div>
+                    <div class="section-header">
+                        <h2 class="section-title green">MACRO TERMINAL PREVIEW</h2>
+                    </div>
+                    <div class="macro-data">
+                        <div class="macro-item">
+                            <span class="macro-label">US 10Y</span>
+                            <span class="macro-value" id="us10y-value">4.42%</span>
+                        </div>
+                        <div class="macro-divider"></div>
+                        <div class="macro-item">
+                            <span class="macro-label">PUT/CALL</span>
+                            <span class="macro-value" id="putcall-value">0.98</span>
+                        </div>
+                        <div class="macro-arrow">›</div>
+                    </div>
+                </div>
+
+                <!-- Daily Motivation -->
+                <div class="section-card motivation-card">
+                    <div class="section-border border-yellow"></div>
+                    <div class="section-header">
+                        <h2 class="section-title yellow">DAILY MOTIVATION</h2>
+                    </div>
+                    <div class="motivation-content">
+                        <p class="quote" id="quote-text">"A lot of people say they want to be great, but they're not willing to make the sacrifices necessary to achieve greatness."</p>
+                        <p class="quote-zh" id="quote-zh">很多人說他們想要變得卓越，但他們不願意為了卓越做出必要的犧牲。（卓越是犧牲的選擇。）</p>
+                        <p class="quote-author" id="quote-author">— KOBE BRYANT</p>
+                    </div>
+                </div>
+
+                <!-- On This Day in History -->
+                <div class="section-card history-card">
+                    <div class="section-border border-orange"></div>
+                    <div class="section-header">
+                        <h2 class="section-title orange">ON THIS DAY IN HISTORY</h2>
+                    </div>
+                    <div class="history-content">
+                        <div class="history-main">
+                            <span class="history-year" id="history-year">1932</span>
+                            <div class="history-text">
+                                <p class="history-event" id="history-event">First splitting of the atom using a particle accelerator.</p>
+                                <p class="history-event-zh" id="history-event-zh">首次使用粒子加速器分裂原子。</p>
+                            </div>
+                        </div>
+                        <div class="history-footer">
+                            <span class="history-link" id="history-link">點擊查看中文詳細背景介紹</span>
+                            <span class="history-probe">PROBE ›</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Trivia -->
+                <div class="section-card trivia-card">
+                    <div class="section-border border-multi"></div>
+                    <div class="section-header">
+                        <h2 class="section-title yellow">DAILY TRIVIA</h2>
+                    </div>
+                    <div class="trivia-content">
+                        <div class="trivia-icon">💡</div>
+                        <div class="trivia-text">
+                            <p class="trivia-fact" id="trivia-fact">On April 14, 1932, John Cockcroft and Ernest Walton split the atom (lithium) using a particle accelerator for the first time.</p>
+                            <p class="trivia-fact-zh" id="trivia-fact-zh">1932年4月14日，約翰·考克饒夫和歐內斯特·沃爾頓首次使用粒子加速器分裂了原子（鋰）。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page: MACRO -->
+            <div class="page" id="page-macro">
+                <div class="section-card macro-full">
+                    <div class="section-border border-green"></div>
+                    <div class="section-header">
+                        <h2 class="section-title green">MACRO TERMINAL</h2>
+                    </div>
+                    <div class="macro-grid">
+                        <div class="macro-grid-item">
+                            <span class="macro-label">US 10Y YIELD</span>
+                            <span class="macro-value-lg">4.42%</span>
+                        </div>
+                        <div class="macro-grid-item">
+                            <span class="macro-label">PUT/CALL RATIO</span>
+                            <span class="macro-value-lg">0.98</span>
+                        </div>
+                        <div class="macro-grid-item">
+                            <span class="macro-label">DXY INDEX</span>
+                            <span class="macro-value-lg">104.25</span>
+                        </div>
+                        <div class="macro-grid-item">
+                            <span class="macro-label">FED FUNDS RATE</span>
+                            <span class="macro-value-lg">4.50%</span>
+                        </div>
+                        <div class="macro-grid-item">
+                            <span class="macro-label">US CPI (YoY)</span>
+                            <span class="macro-value-lg">2.4%</span>
+                        </div>
+                        <div class="macro-grid-item">
+                            <span class="macro-label">US UNEMPLOYMENT</span>
+                            <span class="macro-value-lg">4.2%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page: INTEL -->
+            <div class="page" id="page-intel">
+                <div class="section-card intel-full">
+                    <div class="section-border border-cyan"></div>
+                    <div class="section-header">
+                        <h2 class="section-title cyan">INTEL BRIEFING</h2>
+                    </div>
+                    <div class="intel-list">
+                        <div class="intel-item">
+                            <span class="intel-time">08:30</span>
+                            <span class="intel-tag tag-market">MARKET</span>
+                            <span class="intel-text">US futures indicate lower open amid trade tensions</span>
+                        </div>
+                        <div class="intel-item">
+                            <span class="intel-time">09:15</span>
+                            <span class="intel-tag tag-fed">FED</span>
+                            <span class="intel-text">Fed officials signal patience on rate cuts</span>
+                        </div>
+                        <div class="intel-item">
+                            <span class="intel-time">10:00</span>
+                            <span class="intel-tag tag-geo">GEO</span>
+                            <span class="intel-text">EU trade negotiations enter critical phase</span>
+                        </div>
+                        <div class="intel-item">
+                            <span class="intel-time">11:30</span>
+                            <span class="intel-tag tag-tech">TECH</span>
+                            <span class="intel-text">AI chip demand continues to surge globally</span>
+                        </div>
+                        <div class="intel-item">
+                            <span class="intel-time">14:00</span>
+                            <span class="intel-tag tag-market">MARKET</span>
+                            <span class="intel-text">Asian markets mixed on economic data releases</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page: WEALTH -->
+            <div class="page" id="page-wealth">
+                <div class="section-card wealth-full">
+                    <div class="section-border border-purple"></div>
+                    <div class="section-header">
+                        <h2 class="section-title purple">WEALTH TRACKER</h2>
+                    </div>
+                    <div class="wealth-grid">
+                        <div class="wealth-item">
+                            <span class="wealth-label">PORTFOLIO VALUE</span>
+                            <span class="wealth-value">—</span>
+                        </div>
+                        <div class="wealth-item">
+                            <span class="wealth-label">TODAY P/L</span>
+                            <span class="wealth-value">—</span>
+                        </div>
+                        <div class="wealth-item">
+                            <span class="wealth-label">YTD RETURN</span>
+                            <span class="wealth-value">—</span>
+                        </div>
+                        <div class="wealth-item">
+                            <span class="wealth-label">CASH POSITION</span>
+                            <span class="wealth-value">—</span>
+                        </div>
+                    </div>
+                    <p class="wealth-note">Connect your brokerage to enable wealth tracking.</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-items">
+                <button class="nav-item active" data-page="main">
+                    MAIN
+                    <span class="nav-dot"></span>
+                </button>
+                <button class="nav-item" data-page="macro">
+                    MACRO
+                </button>
+                <button class="nav-item" data-page="intel">
+                    INTEL
+                </button>
+                <button class="nav-item" data-page="wealth">
+                    WEALTH
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
