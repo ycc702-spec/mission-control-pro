@@ -242,10 +242,20 @@ body {
     position: relative;
     overflow: hidden;
     transition: border-color 0.3s, transform 0.2s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    cursor: pointer;
+}
+
+a.data-card {
+    text-decoration: none;
+    color: inherit;
 }
 
 .data-card:hover {
     transform: translateY(-2px);
+    border-color: var(--border-glow);
 }
 
 .data-card::before {
@@ -360,6 +370,39 @@ body {
 .section-title.cyan { color: var(--neon-cyan); }
 .section-title.purple { color: var(--neon-purple); }
 .section-title.red { color: var(--neon-red); }
+
+/* --- Clickable Cards --- */
+a.section-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.clickable-card {
+    cursor: pointer;
+    transition: border-color 0.3s, transform 0.2s;
+}
+
+.clickable-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-glow);
+}
+
+/* Resource link cards */
+a.resource-link {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+a.resource-link:hover {
+    background: var(--bg-card-hover);
+}
+
+.resource-info-card {
+    opacity: 0.7;
+}
 
 /* --- Macro Terminal Preview --- */
 .macro-terminal {

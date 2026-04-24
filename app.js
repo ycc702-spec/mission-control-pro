@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadDailyContent();
     renderMacroVideos();
     renderIntelVideos();
+    fetchMarketData();
 });
 
 // ===== NAVIGATION =====
@@ -120,6 +121,7 @@ function loadDailyContent() {
     const history = historyEvents[dayOfYear % historyEvents.length];
     const trivia = triviaFacts[dayOfYear % triviaFacts.length];
 
+    // Set quote content
     const quoteText = document.getElementById('quote-text');
     const quoteZh = document.getElementById('quote-zh');
     const quoteAuthor = document.getElementById('quote-author');
@@ -127,6 +129,14 @@ function loadDailyContent() {
     if (quoteZh) quoteZh.textContent = quote.zh;
     if (quoteAuthor) quoteAuthor.textContent = `— ${quote.author}`;
 
+    // Set motivation card link — search the quote author
+    const motivationCard = document.getElementById('motivationCard');
+    if (motivationCard) {
+        const searchQuery = encodeURIComponent(quote.author + ' quotes');
+        motivationCard.href = `https://www.google.com/search?q=${searchQuery}`;
+    }
+
+    // Set history content
     const historyYear = document.getElementById('history-year');
     const historyEvent = document.getElementById('history-event');
     const historyEventZh = document.getElementById('history-event-zh');
@@ -134,10 +144,25 @@ function loadDailyContent() {
     if (historyEvent) historyEvent.textContent = history.event;
     if (historyEventZh) historyEventZh.textContent = history.zh;
 
+    // Set history card link — search the event on Wikipedia
+    const historyCard = document.getElementById('historyCard');
+    if (historyCard) {
+        const searchQuery = encodeURIComponent(history.year + ' ' + history.event);
+        historyCard.href = `https://en.wikipedia.org/w/index.php?search=${searchQuery}`;
+    }
+
+    // Set trivia content
     const triviaFact = document.getElementById('trivia-fact');
     const triviaFactZh = document.getElementById('trivia-fact-zh');
     if (triviaFact) triviaFact.textContent = trivia.fact;
     if (triviaFactZh) triviaFactZh.textContent = trivia.zh;
+
+    // Set trivia card link — search the fact
+    const triviaCard = document.getElementById('triviaCard');
+    if (triviaCard) {
+        const searchQuery = encodeURIComponent(trivia.fact);
+        triviaCard.href = `https://www.google.com/search?q=${searchQuery}`;
+    }
 }
 
 // ===== VIDEO DATA (63 records from D1 Database) =====
@@ -1930,3 +1955,147 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+// ===== REAL-TIME MARKET DATA =====
+// Fetches VIX, USD/TWD from Yahoo Finance (via CORS proxy) and F&G from alternative.me
+
+const CORS_PROXIES = [
+    'https://api.allorigins.win/raw?url=',
+    'https://corsproxy.io/?'
+];
+
+async function fetchWithProxy(url) {
+    for (const proxy of CORS_PROXIES) {
+        try {
+            const resp = await fetch(proxy + encodeURIComponent(url), { 
+                signal: AbortSignal.timeout(8000) 
+            });
+            if (resp.ok) return await resp.json();
+        } catch (e) {
+            continue;
+        }
+    }
+    throw new Error('All proxies failed');
+}
+
+async function fetchMarketData() {
+    // Fetch all three data sources in parallel
+    await Promise.allSettled([
+        fetchVIX(),
+        fetchFNG(),
+        fetchUSDTWD()
+    ]);
+}
+
+async function fetchVIX() {
+    const valueEl = document.getElementById('vix-value');
+    const changeEl = document.getElementById('vix-change');
+    
+    try {
+        const url = 'https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX?interval=1d&range=2d';
+        const data = await fetchWithProxy(url);
+        
+        if (data && data.chart && data.chart.result && data.chart.result[0]) {
+            const meta = data.chart.result[0].meta;
+            const price = meta.regularMarketPrice;
+            const prevClose = meta.chartPreviousClose || meta.previousClose || 0;
+            const changePct = prevClose ? ((price - prevClose) / prevClose * 100) : 0;
+            
+            if (valueEl) valueEl.textContent = price.toFixed(2);
+            if (changeEl) {
+                const sign = changePct >= 0 ? '+' : '';
+                changeEl.textContent = `${sign}${changePct.toFixed(2)}%`;
+                changeEl.className = 'card-change ' + (changePct >= 0 ? 'negative' : 'positive'); // VIX up = bad (red), down = good (green)
+            }
+        } else {
+            throw new Error('Invalid data');
+        }
+    } catch (e) {
+        console.warn('VIX fetch failed:', e);
+        if (valueEl) valueEl.textContent = '--';
+        if (changeEl) {
+            changeEl.textContent = 'View Live ↗';
+            changeEl.className = 'card-change neutral';
+        }
+    }
+}
+
+async function fetchFNG() {
+    const valueEl = document.getElementById('fng-value');
+    const changeEl = document.getElementById('fng-change');
+    
+    try {
+        // alternative.me Fear & Greed Index (crypto-based, CORS-friendly, no key needed)
+        const resp = await fetch('https://api.alternative.me/fng/?limit=1', {
+            signal: AbortSignal.timeout(8000)
+        });
+        const data = await resp.json();
+        
+        if (data && data.data && data.data[0]) {
+            const score = parseInt(data.data[0].value);
+            const classification = data.data[0].value_classification;
+            
+            if (valueEl) valueEl.textContent = score;
+            if (changeEl) {
+                changeEl.textContent = classification;
+                if (score <= 25) {
+                    changeEl.className = 'card-change negative'; // Extreme Fear = red
+                } else if (score <= 45) {
+                    changeEl.className = 'card-change neutral'; // Fear = neutral
+                } else if (score <= 55) {
+                    changeEl.className = 'card-change neutral'; // Neutral
+                } else if (score <= 75) {
+                    changeEl.className = 'card-change positive'; // Greed = green
+                } else {
+                    changeEl.className = 'card-change positive'; // Extreme Greed = green
+                }
+            }
+        } else {
+            throw new Error('Invalid data');
+        }
+    } catch (e) {
+        console.warn('F&G fetch failed:', e);
+        if (valueEl) valueEl.textContent = '--';
+        if (changeEl) {
+            changeEl.textContent = 'View Live ↗';
+            changeEl.className = 'card-change neutral';
+        }
+    }
+}
+
+async function fetchUSDTWD() {
+    const valueEl = document.getElementById('usdtwd-value');
+    const changeEl = document.getElementById('usdtwd-change');
+    
+    try {
+        const url = 'https://query1.finance.yahoo.com/v8/finance/chart/USDTWD=X?interval=1d&range=2d';
+        const data = await fetchWithProxy(url);
+        
+        if (data && data.chart && data.chart.result && data.chart.result[0]) {
+            const meta = data.chart.result[0].meta;
+            const price = meta.regularMarketPrice;
+            const prevClose = meta.chartPreviousClose || meta.previousClose || 0;
+            const changePct = prevClose ? ((price - prevClose) / prevClose * 100) : 0;
+            
+            if (valueEl) valueEl.textContent = price.toFixed(3);
+            if (changeEl) {
+                const sign = changePct >= 0 ? '+' : '';
+                changeEl.textContent = `${sign}${changePct.toFixed(3)}%`;
+                changeEl.className = 'card-change ' + (changePct >= 0 ? 'positive' : 'negative');
+            }
+        } else {
+            throw new Error('Invalid data');
+        }
+    } catch (e) {
+        console.warn('USD/TWD fetch failed:', e);
+        // Fallback: Show approximate current rate
+        if (valueEl) valueEl.textContent = '32.50';
+        if (changeEl) {
+            changeEl.textContent = 'View Live ↗';
+            changeEl.className = 'card-change neutral';
+        }
+    }
+}
+
+// Refresh market data every 5 minutes
+setInterval(fetchMarketData, 5 * 60 * 1000);

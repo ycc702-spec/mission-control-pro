@@ -35,19 +35,19 @@
 
             <!-- ==================== PAGE: MAIN ==================== -->
             <div class="page active" id="page-main">
-                <!-- Data Cards Row -->
+                <!-- Data Cards Row — each card is a clickable link -->
                 <div class="data-cards-row">
-                    <div class="data-card card-vix">
+                    <a href="https://www.google.com/finance/quote/VIX:INDEXCBOE" target="_blank" rel="noopener" class="data-card card-vix" id="card-vix">
                         <div class="card-header">
                             <span class="card-label">VIX</span>
-                            <span class="card-icon" id="vix-icon">&#8599;</span>
+                            <span class="card-icon">&#8599;</span>
                         </div>
                         <div class="card-body">
                             <span class="card-value" id="vix-value">--</span>
                             <span class="card-change neutral" id="vix-change">loading</span>
                         </div>
-                    </div>
-                    <div class="data-card card-fng">
+                    </a>
+                    <a href="https://edition.cnn.com/markets/fear-and-greed" target="_blank" rel="noopener" class="data-card card-fng" id="card-fng">
                         <div class="card-header">
                             <span class="card-label">CNN F&amp;G</span>
                             <span class="card-icon">&#8599;</span>
@@ -56,8 +56,8 @@
                             <span class="card-value" id="fng-value">--</span>
                             <span class="card-change neutral" id="fng-change">/100</span>
                         </div>
-                    </div>
-                    <div class="data-card card-usdtwd">
+                    </a>
+                    <a href="https://www.google.com/finance/quote/USD-TWD" target="_blank" rel="noopener" class="data-card card-usdtwd" id="card-usdtwd">
                         <div class="card-header">
                             <span class="card-label">USD/TWD</span>
                             <span class="card-icon">&#8599;</span>
@@ -66,11 +66,11 @@
                             <span class="card-value" id="usdtwd-value">--</span>
                             <span class="card-change neutral" id="usdtwd-change">loading</span>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
-                <!-- Macro Terminal Preview -->
-                <div class="section-card macro-terminal" id="macroPreviewCard">
+                <!-- Macro Terminal Preview — clickable to MACRO page -->
+                <div class="section-card macro-terminal clickable-card" id="macroPreviewCard">
                     <div class="section-border border-green"></div>
                     <div class="section-header">
                         <h2 class="section-title green">MACRO TERMINAL PREVIEW</h2>
@@ -89,8 +89,8 @@
                     </div>
                 </div>
 
-                <!-- Daily Motivation -->
-                <div class="section-card motivation-card">
+                <!-- Daily Motivation — clickable to search quote -->
+                <a class="section-card motivation-card clickable-card" id="motivationCard" href="#" target="_blank" rel="noopener">
                     <div class="section-border border-yellow"></div>
                     <div class="section-header">
                         <h2 class="section-title yellow">DAILY MOTIVATION</h2>
@@ -100,10 +100,10 @@
                         <p class="quote-zh" id="quote-zh"></p>
                         <p class="quote-author" id="quote-author"></p>
                     </div>
-                </div>
+                </a>
 
-                <!-- On This Day in History -->
-                <div class="section-card history-card">
+                <!-- On This Day in History — clickable to Wikipedia -->
+                <a class="section-card history-card clickable-card" id="historyCard" href="#" target="_blank" rel="noopener">
                     <div class="section-border border-orange"></div>
                     <div class="section-header">
                         <h2 class="section-title orange">ON THIS DAY IN HISTORY</h2>
@@ -117,10 +117,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
 
-                <!-- Daily Trivia -->
-                <div class="section-card trivia-card">
+                <!-- Daily Trivia — clickable to search -->
+                <a class="section-card trivia-card clickable-card" id="triviaCard" href="#" target="_blank" rel="noopener">
                     <div class="section-border border-cyan"></div>
                     <div class="section-header">
                         <h2 class="section-title cyan">DAILY TRIVIA</h2>
@@ -131,7 +131,7 @@
                             <p class="trivia-fact-zh" id="trivia-fact-zh"></p>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- ==================== PAGE: MACRO ==================== -->
@@ -233,15 +233,15 @@
                             <h3 class="section-title orange">REHAB VIDEOS</h3>
                         </div>
                         <div class="resource-grid">
-                            <div class="resource-card">
+                            <a class="resource-card resource-link" href="https://pub-b9828716775e15f7d5b8c5f8bf4d678e.r2.dev/rehab_1.mp4" target="_blank" rel="noopener">
                                 <div class="resource-icon">&#127939;</div>
                                 <div class="resource-info">
                                     <h4>Rehab Video 1</h4>
                                     <p>Account 1 (Yachenc702) - R2 Storage</p>
                                 </div>
-                                <span class="resource-badge">1.5 MB</span>
-                            </div>
-                            <div class="resource-card">
+                                <span class="resource-badge">1.5 MB &#8599;</span>
+                            </a>
+                            <div class="resource-card resource-info-card">
                                 <div class="resource-icon">&#127939;</div>
                                 <div class="resource-info">
                                     <h4>Rehab Videos 1-5</h4>
@@ -261,7 +261,7 @@
                             <h3 class="section-title green">ENGLISH LEARNING</h3>
                         </div>
                         <div class="resource-grid">
-                            <div class="resource-card">
+                            <div class="resource-card resource-info-card">
                                 <div class="resource-icon">&#127908;</div>
                                 <div class="resource-info">
                                     <h4>Podcast Videos (6)</h4>
@@ -281,7 +281,7 @@
                             <h3 class="section-title yellow">SPORTS &amp; FITNESS</h3>
                         </div>
                         <div class="resource-grid">
-                            <div class="resource-card">
+                            <div class="resource-card resource-info-card">
                                 <div class="resource-icon">&#127936;</div>
                                 <div class="resource-info">
                                     <h4>Basketball Shooting Range</h4>
