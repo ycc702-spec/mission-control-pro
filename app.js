@@ -1957,145 +1957,92 @@ function escapeHtml(text) {
 }
 
 // ===== REAL-TIME MARKET DATA =====
-// Fetches VIX, USD/TWD from Yahoo Finance (via CORS proxy) and F&G from alternative.me
+// 資料來源：Cloudflare Pages Function /api/market（邊緣節點代抓 Yahoo Finance + Fear&Greed）
+// 不再依賴第三方 CORS proxy，100% Cloudflare 基礎設施
 
-const CORS_PROXIES = [
-    'https://api.allorigins.win/raw?url=',
-    'https://corsproxy.io/?'
-];
+function applyQuote(valueId, changeId, q, opts = {}) {
+    const valueEl = document.getElementById(valueId);
+    const changeEl = document.getElementById(changeId);
+    if (!valueEl && !changeEl) return;
 
-async function fetchWithProxy(url) {
-    for (const proxy of CORS_PROXIES) {
-        try {
-            const resp = await fetch(proxy + encodeURIComponent(url), { 
-                signal: AbortSignal.timeout(8000) 
-            });
-            if (resp.ok) return await resp.json();
-        } catch (e) {
-            continue;
+    if (!q || q.price == null) {
+        if (valueEl) valueEl.textContent = '--';
+        if (changeEl) {
+            changeEl.textContent = 'View Live ↗';
+            changeEl.className = 'card-change neutral';
         }
+        return;
     }
-    throw new Error('All proxies failed');
+
+    const decimals = opts.decimals ?? 2;
+    const inverseColor = opts.inverseColor === true; // VIX 漲=紅（壞）
+    if (valueEl) valueEl.textContent = q.price.toFixed(decimals);
+    if (changeEl) {
+        const sign = q.changePct >= 0 ? '+' : '';
+        changeEl.textContent = `${sign}${q.changePct.toFixed(2)}%`;
+        const up = q.changePct >= 0;
+        const cls = inverseColor ? (up ? 'negative' : 'positive') : (up ? 'positive' : 'negative');
+        changeEl.className = 'card-change ' + cls;
+    }
+}
+
+function applyFNG(valueId, changeId, f) {
+    const valueEl = document.getElementById(valueId);
+    const changeEl = document.getElementById(changeId);
+    if (!f || f.value == null) {
+        if (valueEl) valueEl.textContent = '--';
+        if (changeEl) {
+            changeEl.textContent = 'View Live ↗';
+            changeEl.className = 'card-change neutral';
+        }
+        return;
+    }
+    const score = f.value;
+    if (valueEl) valueEl.textContent = score;
+    if (changeEl) {
+        changeEl.textContent = f.classification || '';
+        if (score <= 25) changeEl.className = 'card-change negative';
+        else if (score >= 75) changeEl.className = 'card-change positive';
+        else if (score >= 55) changeEl.className = 'card-change positive';
+        else changeEl.className = 'card-change neutral';
+    }
 }
 
 async function fetchMarketData() {
-    // Fetch all three data sources in parallel
-    await Promise.allSettled([
-        fetchVIX(),
-        fetchFNG(),
-        fetchUSDTWD()
-    ]);
-}
-
-async function fetchVIX() {
-    const valueEl = document.getElementById('vix-value');
-    const changeEl = document.getElementById('vix-change');
-    
     try {
-        const url = 'https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX?interval=1d&range=2d';
-        const data = await fetchWithProxy(url);
-        
-        if (data && data.chart && data.chart.result && data.chart.result[0]) {
-            const meta = data.chart.result[0].meta;
-            const price = meta.regularMarketPrice;
-            const prevClose = meta.chartPreviousClose || meta.previousClose || 0;
-            const changePct = prevClose ? ((price - prevClose) / prevClose * 100) : 0;
-            
-            if (valueEl) valueEl.textContent = price.toFixed(2);
-            if (changeEl) {
-                const sign = changePct >= 0 ? '+' : '';
-                changeEl.textContent = `${sign}${changePct.toFixed(2)}%`;
-                changeEl.className = 'card-change ' + (changePct >= 0 ? 'negative' : 'positive'); // VIX up = bad (red), down = good (green)
-            }
-        } else {
-            throw new Error('Invalid data');
-        }
+        const resp = await fetch('/api/market', { signal: AbortSignal.timeout(15000) });
+        if (!resp.ok) throw new Error('market api ' + resp.status);
+        const body = await resp.json();
+        const d = body?.data || {};
+
+        applyQuote('vix-value', 'vix-change', d.vix, { decimals: 2, inverseColor: true });
+        applyQuote('usdtwd-value', 'usdtwd-change', d.usdtwd, { decimals: 3 });
+        applyFNG('fng-value', 'fng-change', d.fearGreed);
+
+        // 擴充卡片（若 index.html 存在對應 id 就會填入）
+        applyQuote('spy-value', 'spy-change', d.spy);
+        applyQuote('qqq-value', 'qqq-change', d.qqq);
+        applyQuote('voo-value', 'voo-change', d.voo);
+        applyQuote('nvda-value', 'nvda-change', d.nvda);
+        applyQuote('tsm-value', 'tsm-change', d.tsm);
+        applyQuote('tsla-value', 'tsla-change', d.tsla);
+        applyQuote('smh-value', 'smh-change', d.smh);
+        applyQuote('pave-value', 'pave-change', d.pave);
+        applyQuote('gold-value', 'gold-change', d.gold);
+        applyQuote('oil-value', 'oil-change', d.oil);
     } catch (e) {
-        console.warn('VIX fetch failed:', e);
-        if (valueEl) valueEl.textContent = '--';
-        if (changeEl) {
-            changeEl.textContent = 'View Live ↗';
-            changeEl.className = 'card-change neutral';
-        }
-    }
-}
-
-async function fetchFNG() {
-    const valueEl = document.getElementById('fng-value');
-    const changeEl = document.getElementById('fng-change');
-    
-    try {
-        // alternative.me Fear & Greed Index (crypto-based, CORS-friendly, no key needed)
-        const resp = await fetch('https://api.alternative.me/fng/?limit=1', {
-            signal: AbortSignal.timeout(8000)
+        console.warn('market fetch failed:', e);
+        ['vix', 'usdtwd', 'fng'].forEach(k => {
+            const vv = document.getElementById(k + '-value');
+            const cc = document.getElementById(k + '-change');
+            if (vv && vv.textContent === '') vv.textContent = '--';
+            if (cc && cc.textContent === '') {
+                cc.textContent = 'View Live ↗';
+                cc.className = 'card-change neutral';
+            }
         });
-        const data = await resp.json();
-        
-        if (data && data.data && data.data[0]) {
-            const score = parseInt(data.data[0].value);
-            const classification = data.data[0].value_classification;
-            
-            if (valueEl) valueEl.textContent = score;
-            if (changeEl) {
-                changeEl.textContent = classification;
-                if (score <= 25) {
-                    changeEl.className = 'card-change negative'; // Extreme Fear = red
-                } else if (score <= 45) {
-                    changeEl.className = 'card-change neutral'; // Fear = neutral
-                } else if (score <= 55) {
-                    changeEl.className = 'card-change neutral'; // Neutral
-                } else if (score <= 75) {
-                    changeEl.className = 'card-change positive'; // Greed = green
-                } else {
-                    changeEl.className = 'card-change positive'; // Extreme Greed = green
-                }
-            }
-        } else {
-            throw new Error('Invalid data');
-        }
-    } catch (e) {
-        console.warn('F&G fetch failed:', e);
-        if (valueEl) valueEl.textContent = '--';
-        if (changeEl) {
-            changeEl.textContent = 'View Live ↗';
-            changeEl.className = 'card-change neutral';
-        }
     }
 }
 
-async function fetchUSDTWD() {
-    const valueEl = document.getElementById('usdtwd-value');
-    const changeEl = document.getElementById('usdtwd-change');
-    
-    try {
-        const url = 'https://query1.finance.yahoo.com/v8/finance/chart/USDTWD=X?interval=1d&range=2d';
-        const data = await fetchWithProxy(url);
-        
-        if (data && data.chart && data.chart.result && data.chart.result[0]) {
-            const meta = data.chart.result[0].meta;
-            const price = meta.regularMarketPrice;
-            const prevClose = meta.chartPreviousClose || meta.previousClose || 0;
-            const changePct = prevClose ? ((price - prevClose) / prevClose * 100) : 0;
-            
-            if (valueEl) valueEl.textContent = price.toFixed(3);
-            if (changeEl) {
-                const sign = changePct >= 0 ? '+' : '';
-                changeEl.textContent = `${sign}${changePct.toFixed(3)}%`;
-                changeEl.className = 'card-change ' + (changePct >= 0 ? 'positive' : 'negative');
-            }
-        } else {
-            throw new Error('Invalid data');
-        }
-    } catch (e) {
-        console.warn('USD/TWD fetch failed:', e);
-        // Fallback: Show approximate current rate
-        if (valueEl) valueEl.textContent = '32.50';
-        if (changeEl) {
-            changeEl.textContent = 'View Live ↗';
-            changeEl.className = 'card-change neutral';
-        }
-    }
-}
-
-// Refresh market data every 5 minutes
-setInterval(fetchMarketData, 5 * 60 * 1000);
+// Refresh market data every 90 seconds (Cloudflare edge caches 60s)
+setInterval(fetchMarketData, 90 * 1000);
