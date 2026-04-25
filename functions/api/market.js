@@ -34,19 +34,24 @@ async function yahoo(symbol) {
 }
 
 async function fng() {
+  // CNN Fear & Greed (stock market). 注意：alternative.me 是加密 F&G，不能用。
   try {
-    const r = await fetch("https://api.alternative.me/fng/?limit=1", {
-      headers: { "Accept": "application/json" },
+    const r = await fetch("https://production.dataviz.cnn.io/index/fearandgreed/graphdata", {
+      headers: {
+        "User-Agent": UA,
+        "Accept": "application/json",
+        "Referer": "https://edition.cnn.com/markets/fear-and-greed",
+      },
       cf: { cacheTtl: 300, cacheEverything: true },
     });
     if (!r.ok) return null;
     const j = await r.json();
-    const d = j?.data?.[0];
-    if (!d) return null;
+    const g = j?.fear_and_greed;
+    if (!g || g.score == null) return null;
     return {
-      value: Number(d.value),
-      classification: d.value_classification,
-      ts: d.timestamp,
+      value: Math.round(Number(g.score)),
+      classification: g.rating || null,
+      ts: g.timestamp || null,
     };
   } catch {
     return null;
