@@ -577,43 +577,43 @@ a.section-card {
 }
 
 /* --- Macro Terminal --- */
-.macro-terminal {
+.wealth-terminal {
     cursor: pointer;
 }
 
-.macro-data {
+.wealth-data {
     display: flex;
     align-items: center;
     gap: 16px;
 }
 
-.macro-item {
+.wealth-item {
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-.macro-label {
+.wealth-label {
     font-family: var(--font-mono);
     font-size: 0.65rem;
     color: var(--text-muted);
     letter-spacing: 1px;
 }
 
-.macro-value {
+.wealth-value {
     font-family: var(--font-mono);
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--neon-green);
 }
 
-.macro-divider {
+.wealth-divider {
     width: 1px;
     height: 30px;
     background: var(--border-color);
 }
 
-.macro-arrow {
+.wealth-arrow {
     margin-left: auto;
     font-size: 1.5rem;
     color: var(--neon-green);
@@ -621,7 +621,7 @@ a.section-card {
     transition: transform var(--transition-duration);
 }
 
-.macro-arrow:hover {
+.wealth-arrow:hover {
     transform: translateX(4px);
 }
 

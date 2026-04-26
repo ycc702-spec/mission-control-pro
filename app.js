@@ -279,7 +279,7 @@ function initNavigation() {
     const macroPreview = document.getElementById('macroPreviewCard');
     if (macroPreview) {
         macroPreview.addEventListener('click', () => {
-            navigateTo('macro');
+            navigateTo('wealth');
         });
     }
 
@@ -1984,7 +1984,7 @@ function getChannelTagClass(channel) {
 
 // ===== SEARCH FUNCTIONALITY =====
 function initSearchFunctionality() {
-    const macroSearch = document.getElementById('macroSearch');
+    const macroSearch = document.getElementById('wealthSearch');
     const intelSearch = document.getElementById('intelSearch');
 
     if (macroSearch) {
@@ -2003,7 +2003,7 @@ function initSearchFunctionality() {
 }
 
 function filterAndRenderMacroVideos(query) {
-    const container = document.getElementById('macro-video-list');
+    const container = document.getElementById('wealth-video-list');
     if (!container) return;
 
     let videos = videoData.filter(v => {
@@ -2085,7 +2085,7 @@ function createVideoCard(video) {
 }
 
 function renderMacroVideos(filter = 'all') {
-    const container = document.getElementById('macro-video-list');
+    const container = document.getElementById('wealth-video-list');
     if (!container) return;
 
     let videos = videoData.filter(v => {

@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260426d">
+    <link rel="stylesheet" href="style.css?v=20260426e">
 </head>
 <body>
     <div class="app-container">
@@ -165,17 +165,17 @@
                             <div class="section-header">
                                 <h2 class="section-title green">MACRO TERMINAL</h2>
                             </div>
-                            <div class="macro-data">
-                                <div class="macro-item">
-                                    <span class="macro-label">VIDEOS</span>
-                                    <span class="macro-value" id="macro-latest-count">41</span>
+                            <div class="wealth-data">
+                                <div class="wealth-item">
+                                    <span class="wealth-label">VIDEOS</span>
+                                    <span class="wealth-value" id="wealth-latest-count">41</span>
                                 </div>
-                                <div class="macro-divider"></div>
-                                <div class="macro-item">
-                                    <span class="macro-label">CHANNELS</span>
-                                    <span class="macro-value">Nicolas / Alan</span>
+                                <div class="wealth-divider"></div>
+                                <div class="wealth-item">
+                                    <span class="wealth-label">CHANNELS</span>
+                                    <span class="wealth-value">Nicolas / Alan</span>
                                 </div>
-                                <div class="macro-arrow">›</div>
+                                <div class="wealth-arrow">›</div>
                             </div>
                         </div>
 
@@ -239,7 +239,7 @@
             </div>
 
             <!-- ==================== PAGE: MACRO ==================== -->
-            <div class="page" id="page-macro">
+            <div class="page" id="page-wealth">
                 <div class="page-header-bar">
                     <h2 class="page-title green">MACRO TERMINAL</h2>
                     <p class="page-desc">Financial analysis from Nicolas Young & Alan Chen</p>
@@ -247,7 +247,7 @@
 
                 <!-- Search Bar -->
                 <div class="search-bar-container">
-                    <input type="text" class="search-input" id="macroSearch" placeholder="Search videos...">
+                    <input type="text" class="search-input" id="wealthSearch" placeholder="Search videos...">
                     <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="11" cy="11" r="8"></circle>
                         <path d="m21 21-4.3-4.3"></path>
@@ -262,7 +262,7 @@
                 </div>
 
                 <!-- Video List -->
-                <div class="video-list" id="macro-video-list">
+                <div class="video-list" id="wealth-video-list">
                     <!-- Dynamically populated -->
                 </div>
             </div>
@@ -593,7 +593,7 @@
             </div>
 
             <!-- ==================== PAGE: WEALTH ==================== -->
-            <div class="page" id="page-wealth">
+            <div class="page" id="page-hr">
                 <div class="page-header-bar">
                     <h2 class="page-title purple">WEALTH & RESOURCES</h2>
                     <p class="page-desc">Knowledge base, media resources & personal assets</p>
@@ -787,9 +787,9 @@
                     <span class="nav-label">MAIN</span>
                     <span class="nav-dot"></span>
                 </button>
-                <button class="nav-item" data-page="macro" title="Macro Terminal">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-                    <span class="nav-label">MACRO</span>
+                <button class="nav-item" data-page="wealth" title="Wealth & Resources">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span class="nav-label">WEALTH</span>
                 </button>
                 <button class="nav-item" data-page="intel" title="Intel Center">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -803,14 +803,14 @@
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                     <span class="nav-label">UPLOAD</span>
                 </button>
-                <button class="nav-item" data-page="wealth" title="Wealth & Resources">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                    <span class="nav-label">WEALTH</span>
+                <button class="nav-item" data-page="hr" title="HR & Learning">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span class="nav-label">HR</span>
                 </button>
             </div>
         </nav>
     </div>
 
-    <script src="app.js?v=20260426d"></script>
+    <script src="app.js?v=20260426e"></script>
 </body>
 </html>
