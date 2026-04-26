@@ -2493,22 +2493,22 @@ async function uploadFile(file) {
     progressFill.style.width = '0%';
     progressText.textContent = 'Uploading ' + file.name + '...';
     
-    try {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('folder', folder);
-        
-        const xhr = new XMLHttpRequest();
-        
-        xhr.upload.addEventListener('progress', (e) => {
-            if (e.lengthComputable) {
-                const percentComplete = (e.loaded / e.total) * 100;
-                progressFill.style.width = percentComplete + '%';
-                progressText.textContent = Math.round(percentComplete) + '%';
-            }
-        });
-        
-        xhr.addEventListener('load', () => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', folder);
+    
+    const xhr = new XMLHttpRequest();
+    
+    xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable) {
+            const percentComplete = (e.loaded / e.total) * 100;
+            progressFill.style.width = percentComplete + '%';
+            progressText.textContent = Math.round(percentComplete) + '%';
+        }
+    });
+    
+    xhr.addEventListener('load', () => {
+        try {
             if (xhr.status === 200) {
                 const response = JSON.parse(xhr.responseText);
                 if (response.ok && response.url) {
@@ -2516,23 +2516,29 @@ async function uploadFile(file) {
                     resultDiv.style.display = 'block';
                     resultUrl.value = response.url;
                 } else {
-                    throw new Error(response.error || 'Upload failed');
+                    progressDiv.style.display = 'none';
+                    progressText.textContent = 'Error: ' + (response.error || 'Upload failed');
+                    alert('Upload failed: ' + (response.error || 'Unknown error'));
                 }
             } else {
-                throw new Error('Upload failed: ' + xhr.status);
+                progressDiv.style.display = 'none';
+                progressText.textContent = 'Error: HTTP ' + xhr.status;
+                alert('Upload failed: HTTP ' + xhr.status);
             }
-        });
-        
-        xhr.addEventListener('error', () => {
-            throw new Error('Network error');
-        });
-        
-        xhr.open('POST', '/api/upload');
-        xhr.send(formData);
-    } catch (e) {
+        } catch (parseErr) {
+            progressDiv.style.display = 'none';
+            alert('Upload failed: Could not parse response');
+        }
+    });
+    
+    xhr.addEventListener('error', () => {
         progressDiv.style.display = 'none';
-        alert('Upload failed: ' + e.message);
-    }
+        progressText.textContent = 'Network error';
+        alert('Upload failed: Network error');
+    });
+    
+    xhr.open('POST', '/api/upload');
+    xhr.send(formData);
 }
 
 // Refresh market data every 90 seconds
