@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260426e">
+    <link rel="stylesheet" href="style.css?v=20260426f">
 </head>
 <body>
     <div class="app-container">
@@ -58,242 +58,88 @@
                 
                 <!-- Greeting & Weather Bar -->
                 <div class="greeting-bar hud-panel" style="padding:12px 16px; margin-bottom:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                    <div class="hud-corner corner-tl"></div>
-                    <div class="hud-corner corner-tr"></div>
-                    <div class="hud-corner corner-bl"></div>
-                    <div class="hud-corner corner-br"></div>
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span style="font-family:var(--font-mono); font-size:0.85rem; color:var(--neon-cyan); letter-spacing:1px;" id="greetingText">Good morning, Commander</span>
-                        <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);" id="greetingTime"></span>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        <span id="weatherIcon" style="font-size:1.2rem;">🌤️</span>
-                        <span id="weatherTemp" style="font-family:var(--font-mono); font-size:0.85rem; color:var(--neon-yellow);">--°C</span>
-                        <span style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text-muted); letter-spacing:1px;">HSINCHU</span>
-                    </div>
+                    <span id="greeting" style="font-family:var(--font-mono); font-size:0.85rem; color:var(--neon-cyan); letter-spacing:1px;"></span>
+                    <div id="weather" style="display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:0.8rem; color:var(--text-secondary);"></div>
                 </div>
 
-                <!-- Data Cards Row — Real-time market data -->
-                <div class="data-cards-container">
-                    <div class="data-cards-row">
-                        <a href="https://www.google.com/finance/quote/VIX:INDEXCBOE" target="_blank" rel="noopener" class="data-card card-vix hud-panel" id="card-vix">
-                            <div class="hud-corner corner-tl"></div>
-                            <div class="hud-corner corner-tr"></div>
-                            <div class="hud-corner corner-bl"></div>
-                            <div class="hud-corner corner-br"></div>
-                            <div class="card-header">
-                                <span class="card-label">VIX</span>
-                                <span class="card-icon">↗</span>
-                            </div>
-                            <div class="card-body">
-                                <span class="card-value" id="vix-value">--</span>
-                                <span class="card-change neutral" id="vix-change">loading</span>
-                            </div>
-                        </a>
-                        <a href="https://edition.cnn.com/markets/fear-and-greed" target="_blank" rel="noopener" class="data-card card-fng hud-panel" id="card-fng">
-                            <div class="hud-corner corner-tl"></div>
-                            <div class="hud-corner corner-tr"></div>
-                            <div class="hud-corner corner-bl"></div>
-                            <div class="hud-corner corner-br"></div>
-                            <div class="card-header">
-                                <span class="card-label">CNN F&G</span>
-                                <span class="card-icon">↗</span>
-                            </div>
-                            <div class="card-body">
-                                <span class="card-value" id="fng-value">--</span>
-                                <span class="card-change neutral" id="fng-change">/100</span>
-                            </div>
-                        </a>
-                        <a href="https://www.google.com/finance/quote/USD-TWD" target="_blank" rel="noopener" class="data-card card-usdtwd hud-panel" id="card-usdtwd">
-                            <div class="hud-corner corner-tl"></div>
-                            <div class="hud-corner corner-tr"></div>
-                            <div class="hud-corner corner-bl"></div>
-                            <div class="hud-corner corner-br"></div>
-                            <div class="card-header">
-                                <span class="card-label">USD/TWD</span>
-                                <span class="card-icon">↗</span>
-                            </div>
-                            <div class="card-body">
-                                <span class="card-value" id="usdtwd-value">--</span>
-                                <span class="card-change neutral" id="usdtwd-change">loading</span>
-                            </div>
-                        </a>
-                    </div>
-                    <!-- Second row: TAIEX + S&P 500 -->
-                    <div class="data-cards-row" style="margin-top:10px;">
-                        <a href="https://www.google.com/finance/quote/TAIEX:TPE" target="_blank" rel="noopener" class="data-card card-taiex hud-panel" id="card-taiex" style="border-color: rgba(254, 202, 87, 0.25);">
-                            <div class="hud-corner corner-tl"></div>
-                            <div class="hud-corner corner-tr"></div>
-                            <div class="hud-corner corner-bl"></div>
-                            <div class="hud-corner corner-br"></div>
-                            <div class="card-header">
-                                <span class="card-label" style="color:var(--neon-yellow);">TAIEX</span>
-                                <span class="card-icon">↗</span>
-                            </div>
-                            <div class="card-body">
-                                <span class="card-value" id="taiex-value">--</span>
-                                <span class="card-change neutral" id="taiex-change">loading</span>
-                            </div>
-                        </a>
-                        <a href="https://www.google.com/finance/quote/.INX:INDEXSP" target="_blank" rel="noopener" class="data-card card-sp500 hud-panel" id="card-sp500" style="border-color: rgba(168, 85, 247, 0.25);">
-                            <div class="hud-corner corner-tl"></div>
-                            <div class="hud-corner corner-tr"></div>
-                            <div class="hud-corner corner-bl"></div>
-                            <div class="hud-corner corner-br"></div>
-                            <div class="card-header">
-                                <span class="card-label" style="color:var(--neon-purple);">S&P 500</span>
-                                <span class="card-icon">↗</span>
-                            </div>
-                            <div class="card-body">
-                                <span class="card-value" id="sp500-value">--</span>
-                                <span class="card-change neutral" id="sp500-change">loading</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Content Grid -->
-                <div class="main-grid">
-                    <!-- Left Column -->
-                    <div class="main-column main-column-left">
-                        <!-- Macro Terminal Preview -->
-                        <div class="section-card macro-terminal hud-panel clickable-card" id="macroPreviewCard">
-                            <div class="hud-corner corner-tl"></div>
-                            <div class="hud-corner corner-tr"></div>
-                            <div class="hud-corner corner-bl"></div>
-                            <div class="hud-corner corner-br"></div>
-                            <div class="section-header">
-                                <h2 class="section-title green">MACRO TERMINAL</h2>
-                            </div>
-                            <div class="wealth-data">
-                                <div class="wealth-item">
-                                    <span class="wealth-label">VIDEOS</span>
-                                    <span class="wealth-value" id="wealth-latest-count">41</span>
-                                </div>
-                                <div class="wealth-divider"></div>
-                                <div class="wealth-item">
-                                    <span class="wealth-label">CHANNELS</span>
-                                    <span class="wealth-value">Nicolas / Alan</span>
-                                </div>
-                                <div class="wealth-arrow">›</div>
-                            </div>
+                <!-- Market Data Cards -->
+                <div class="data-cards-row">
+                    <a href="https://www.google.com/finance/quote/VIX:INDEXCBOE" target="_blank" rel="noopener" class="data-card hud-panel" id="card-vix">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="card-header">
+                            <span class="card-label">VIX</span>
+                            <span class="card-icon">↗</span>
                         </div>
-
-                        <!-- Daily Motivation -->
-                        <a class="section-card motivation-card hud-panel clickable-card" id="motivationCard" href="#" target="_blank" rel="noopener">
-                            <div class="hud-corner corner-tl"></div>
-                            <div class="hud-corner corner-tr"></div>
-                            <div class="hud-corner corner-bl"></div>
-                            <div class="hud-corner corner-br"></div>
-                            <div class="section-header">
-                                <h2 class="section-title yellow">DAILY MOTIVATION</h2>
-                            </div>
-                            <div class="motivation-content">
-                                <p class="quote" id="quote-text">Loading...</p>
-                                <p class="quote-zh" id="quote-zh"></p>
-                                <p class="quote-author" id="quote-author"></p>
-                            </div>
-                        </a>
-                    </div>
-
-                    <!-- Right Column -->
-                    <div class="main-column main-column-right">
-                        <!-- On This Day in History -->
-                        <a class="section-card history-card hud-panel clickable-card" id="historyCard" href="#" target="_blank" rel="noopener">
-                            <div class="hud-corner corner-tl"></div>
-                            <div class="hud-corner corner-tr"></div>
-                            <div class="hud-corner corner-bl"></div>
-                            <div class="hud-corner corner-br"></div>
-                            <div class="section-header">
-                                <h2 class="section-title orange">ON THIS DAY</h2>
-                            </div>
-                            <div class="history-content">
-                                <div class="history-main">
-                                    <span class="history-year" id="history-year">----</span>
-                                    <div class="history-text">
-                                        <p class="history-event" id="history-event">Loading...</p>
-                                        <p class="history-event-zh" id="history-event-zh"></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Daily Trivia -->
-                        <a class="section-card trivia-card hud-panel clickable-card" id="triviaCard" href="#" target="_blank" rel="noopener">
-                            <div class="hud-corner corner-tl"></div>
-                            <div class="hud-corner corner-tr"></div>
-                            <div class="hud-corner corner-bl"></div>
-                            <div class="hud-corner corner-br"></div>
-                            <div class="section-header">
-                                <h2 class="section-title cyan">DAILY TRIVIA</h2>
-                            </div>
-                            <div class="trivia-content">
-                                <div class="trivia-text">
-                                    <p class="trivia-fact" id="trivia-fact">Loading...</p>
-                                    <p class="trivia-fact-zh" id="trivia-fact-zh"></p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ==================== PAGE: MACRO ==================== -->
-            <div class="page" id="page-wealth">
-                <div class="page-header-bar">
-                    <h2 class="page-title green">MACRO TERMINAL</h2>
-                    <p class="page-desc">Financial analysis from Nicolas Young & Alan Chen</p>
+                        <div class="card-body">
+                            <span class="card-value" id="vix-value">--</span>
+                            <span class="card-change neutral" id="vix-change">--</span>
+                        </div>
+                    </a>
+                    <a href="https://edition.cnn.com/markets/fear-and-greed" target="_blank" rel="noopener" class="data-card hud-panel" id="card-fng">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="card-header">
+                            <span class="card-label">CNN F&G</span>
+                            <span class="card-icon">↗</span>
+                        </div>
+                        <div class="card-body">
+                            <span class="card-value" id="fng-value">--</span>
+                            <span class="card-change neutral" id="fng-change">--</span>
+                        </div>
+                    </a>
                 </div>
 
-                <!-- Search Bar -->
-                <div class="search-bar-container">
-                    <input type="text" class="search-input" id="wealthSearch" placeholder="Search videos...">
-                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.3-4.3"></path>
-                    </svg>
+                <div class="data-cards-row">
+                    <a href="https://www.google.com/finance/quote/USD-TWD" target="_blank" rel="noopener" class="data-card hud-panel" id="card-usdtwd">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="card-header">
+                            <span class="card-label">USD/TWD</span>
+                            <span class="card-icon">↗</span>
+                        </div>
+                        <div class="card-body">
+                            <span class="card-value" id="usdtwd-value">--</span>
+                            <span class="card-change neutral" id="usdtwd-change">--</span>
+                        </div>
+                    </a>
+                    <a href="https://www.google.com/finance/quote/TAIEX:TPE" target="_blank" rel="noopener" class="data-card hud-panel" id="card-taiex">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="card-header">
+                            <span class="card-label">TAIEX</span>
+                            <span class="card-icon">↗</span>
+                        </div>
+                        <div class="card-body">
+                            <span class="card-value" id="taiex-value">--</span>
+                            <span class="card-change neutral" id="taiex-change">--</span>
+                        </div>
+                    </a>
                 </div>
 
-                <!-- Channel Filter -->
-                <div class="filter-bar">
-                    <button class="filter-btn active" data-filter="all">ALL (41)</button>
-                    <button class="filter-btn" data-filter="nicolas">Nicolas (26)</button>
-                    <button class="filter-btn" data-filter="alan">Alan (15)</button>
-                </div>
-
-                <!-- Video List -->
-                <div class="video-list" id="wealth-video-list">
-                    <!-- Dynamically populated -->
-                </div>
-            </div>
-
-            <!-- ==================== PAGE: INTEL ==================== -->
-            <div class="page" id="page-intel">
-                <div class="page-header-bar">
-                    <h2 class="page-title cyan">INTEL CENTER</h2>
-                    <p class="page-desc">AI & Tech intelligence from Alex Finn</p>
-                </div>
-
-                <!-- Search Bar -->
-                <div class="search-bar-container">
-                    <input type="text" class="search-input" id="intelSearch" placeholder="Search intel...">
-                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.3-4.3"></path>
-                    </svg>
-                </div>
-
-                <!-- Video List -->
-                <div class="video-list" id="intel-video-list">
-                    <!-- Dynamically populated -->
-                </div>
-            </div>
-
-            <!-- ==================== PAGE: LIFE ==================== -->
-            <div class="page" id="page-life">
-                <div class="page-header-bar">
-                    <h2 class="page-title cyan">LIFE & PORTFOLIO</h2>
-                    <p class="page-desc">Personal life management — rehab, learning, sports & investments</p>
+                <div class="data-cards-row">
+                    <a href="https://www.google.com/finance/quote/.INX:INDEXSP" target="_blank" rel="noopener" class="data-card hud-panel" id="card-sp500" style="grid-column: 1 / -1;">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="card-header">
+                            <span class="card-label">S&P 500</span>
+                            <span class="card-icon">↗</span>
+                        </div>
+                        <div class="card-body">
+                            <span class="card-value" id="sp500-value">--</span>
+                            <span class="card-change neutral" id="sp500-change">--</span>
+                        </div>
+                    </a>
                 </div>
 
                 <!-- Investment Portfolio Section -->
@@ -367,6 +213,161 @@
                     </div>
                 </div>
 
+                <!-- Macro Terminal Preview -->
+                <div class="wealth-section">
+                    <div class="section-card hud-panel" id="macroPreviewCard" style="cursor:pointer;">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="section-header">
+                            <h3 class="section-title green">MACRO TERMINAL</h3>
+                        </div>
+                        <div class="wealth-data">
+                            <div class="wealth-item">
+                                <span class="wealth-label">VIDEOS</span>
+                                <span class="wealth-value" id="wealth-latest-count">41</span>
+                            </div>
+                            <div class="wealth-divider"></div>
+                            <div class="wealth-item">
+                                <span class="wealth-label">CHANNELS</span>
+                                <span class="wealth-value">Nicolas / Alan</span>
+                            </div>
+                            <div class="wealth-arrow">›</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Content -->
+                <div class="wealth-section">
+                    <div class="section-card hud-panel">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="section-header">
+                            <h3 class="section-title green">DAILY MOTIVATION</h3>
+                        </div>
+                        <div id="motivationCard" style="cursor:pointer; padding:12px 0;">
+                            <p id="motivationText" style="font-family:var(--font-mono); font-size:0.85rem; color:var(--text-secondary); line-height:1.5; margin-bottom:8px;"></p>
+                            <p id="motivationAuthor" style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); letter-spacing:1px;"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wealth-section">
+                    <div class="section-card hud-panel">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="section-header">
+                            <h3 class="section-title cyan">ON THIS DAY</h3>
+                        </div>
+                        <div id="historyCard" style="cursor:pointer; padding:12px 0;">
+                            <p id="historyText" style="font-family:var(--font-mono); font-size:0.85rem; color:var(--text-secondary); line-height:1.5;"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wealth-section">
+                    <div class="section-card hud-panel">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="section-header">
+                            <h3 class="section-title purple">DAILY TRIVIA</h3>
+                        </div>
+                        <div id="triviaCard" style="cursor:pointer; padding:12px 0;">
+                            <p id="triviaText" style="font-family:var(--font-mono); font-size:0.85rem; color:var(--text-secondary); line-height:1.5;"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== PAGE: WEALTH (原 MACRO) ==================== -->
+            <div class="page" id="page-wealth">
+                <div class="page-header-bar">
+                    <h2 class="page-title green">MACRO TERMINAL</h2>
+                    <p class="page-desc">Financial analysis from Nicolas Young & Alan Chen</p>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="search-bar-container">
+                    <input type="text" class="search-input" id="wealthSearch" placeholder="Search videos...">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                </div>
+
+                <!-- Channel Filter -->
+                <div class="filter-bar">
+                    <button class="filter-btn active" data-filter="all">ALL (41)</button>
+                    <button class="filter-btn" data-filter="nicolas">Nicolas (26)</button>
+                    <button class="filter-btn" data-filter="alan">Alan (15)</button>
+                </div>
+
+                <!-- Video List -->
+                <div class="video-list" id="wealth-video-list">
+                    <!-- Dynamically populated -->
+                </div>
+
+                <!-- Alan Chen Knowledge -->
+                <div class="wealth-section" style="margin-top:24px;">
+                    <div class="section-card hud-panel">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="section-header">
+                            <h3 class="section-title purple">KNOWLEDGE BASE</h3>
+                        </div>
+                        <div class="resource-grid">
+                            <div class="resource-card" onclick="toggleKnowledge('alan-chen')">
+                                <div class="resource-icon">📚</div>
+                                <div class="resource-info">
+                                    <h4>Alan Chen Knowledge</h4>
+                                    <p>Science & tech industry analysis</p>
+                                </div>
+                                <span class="resource-arrow">›</span>
+                            </div>
+                            <div class="knowledge-expand" id="kb-alan-chen"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== PAGE: INTEL ==================== -->
+            <div class="page" id="page-intel">
+                <div class="page-header-bar">
+                    <h2 class="page-title cyan">INTEL CENTER</h2>
+                    <p class="page-desc">AI & Tech intelligence from Alex Finn</p>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="search-bar-container">
+                    <input type="text" class="search-input" id="intelSearch" placeholder="Search intel...">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                </div>
+
+                <!-- Video List -->
+                <div class="video-list" id="intel-video-list">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- ==================== PAGE: LIFE ==================== -->
+            <div class="page" id="page-life">
+                <div class="page-header-bar">
+                    <h2 class="page-title orange">HEALTH & WELLNESS</h2>
+                    <p class="page-desc">Personal health management — rehab, sports & wellness</p>
+                </div>
+
                 <!-- Knee Rehab Section -->
                 <div class="wealth-section">
                     <div class="section-card hud-panel">
@@ -422,6 +423,109 @@
                     </div>
                 </div>
 
+                <!-- Knee Recon Knowledge -->
+                <div class="wealth-section">
+                    <div class="section-card hud-panel">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="section-header">
+                            <h3 class="section-title purple">KNOWLEDGE BASE</h3>
+                        </div>
+                        <div class="resource-grid">
+                            <div class="resource-card" onclick="toggleKnowledge('kneerecon')">
+                                <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;"><path d="M12 2v6m0 4v10M8 8h8M6 14h12M9 18h6"/></svg></div>
+                                <div class="resource-info">
+                                    <h4>Knee Recon Knowledge</h4>
+                                    <p>Knee reconstruction & rehab</p>
+                                </div>
+                                <span class="resource-arrow">›</span>
+                            </div>
+                            <div class="knowledge-expand" id="kb-kneerecon"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Basketball Section -->
+                <div class="wealth-section">
+                    <div class="section-card hud-panel">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="section-header">
+                            <h3 class="section-title yellow">SPORTS & FITNESS</h3>
+                        </div>
+                        <div class="resource-grid">
+                            <a class="resource-card resource-link" href="https://pub-215b2e32675e4432b2ff9f10dd54e01d.r2.dev/basketball_training.mp4" target="_blank" rel="noopener">
+                                <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg></div>
+                                <div class="resource-info">
+                                    <h4>Basketball Shooting Range</h4>
+                                    <p>Training & technique videos</p>
+                                </div>
+                                <span class="resource-badge">MP4 ↗</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Memory -->
+                <div class="wealth-section">
+                    <div class="section-card hud-panel">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="section-header">
+                            <h3 class="section-title cyan">KNOWLEDGE BASE</h3>
+                        </div>
+                        <div class="resource-grid">
+                            <div class="resource-card" onclick="toggleKnowledge('daily')">
+                                <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+                                <div class="resource-info">
+                                    <h4>Daily Memory (2026-03-28)</h4>
+                                    <p>Daily log & notes</p>
+                                </div>
+                                <span class="resource-arrow">›</span>
+                            </div>
+                            <div class="knowledge-expand" id="kb-daily"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== PAGE: HR ==================== -->
+            <div class="page" id="page-hr">
+                <div class="page-header-bar">
+                    <h2 class="page-title purple">HR PROFESSIONAL</h2>
+                    <p class="page-desc">HR expertise & English learning resources</p>
+                </div>
+
+                <!-- HRBP 2026 Knowledge -->
+                <div class="wealth-section">
+                    <div class="section-card hud-panel">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="section-header">
+                            <h3 class="section-title purple">KNOWLEDGE BASE</h3>
+                        </div>
+                        <div class="resource-grid">
+                            <div class="resource-card" onclick="toggleKnowledge('hrbp')">
+                                <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                                <div class="resource-info">
+                                    <h4>HRBP 2026 Knowledge</h4>
+                                    <p>HR business partner insights</p>
+                                </div>
+                                <span class="resource-arrow">›</span>
+                            </div>
+                            <div class="knowledge-expand" id="kb-hrbp"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- English Learning Section -->
                 <div class="wealth-section">
                     <div class="section-card hud-panel">
@@ -436,7 +540,7 @@
                             <div class="resource-card">
                                 <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;"><circle cx="12" cy="8" r="3"/><path d="M12 11v8M9 19h6"/></svg></div>
                                 <div class="resource-info">
-                                    <h4>Podcast with Claire — Episode 1</h4>
+                                    <h4>Podcast with Claire</h4>
                                     <p>English Podcast Series — R2 Storage</p>
                                 </div>
                                 <span class="resource-badge">Available ↗</span>
@@ -454,37 +558,6 @@
                                 <div class="resource-info">
                                     <h4>Module Videos (6 episodes)</h4>
                                     <p>Professional English Communication</p>
-                                </div>
-                                <span class="resource-badge">Coming Soon</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sports & Fitness Section -->
-                <div class="wealth-section">
-                    <div class="section-card hud-panel">
-                        <div class="hud-corner corner-tl"></div>
-                        <div class="hud-corner corner-tr"></div>
-                        <div class="hud-corner corner-bl"></div>
-                        <div class="hud-corner corner-br"></div>
-                        <div class="section-header">
-                            <h3 class="section-title yellow">SPORTS & FITNESS</h3>
-                        </div>
-                        <div class="resource-grid">
-                            <a class="resource-card resource-link" href="https://pub-215b2e32675e4432b2ff9f10dd54e01d.r2.dev/basketball_shooting_range.mp4" target="_blank" rel="noopener">
-                                <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></div>
-                                <div class="resource-info">
-                                    <h4>Basketball Shooting Range</h4>
-                                    <p>R2 Storage — Training video</p>
-                                </div>
-                                <span class="resource-badge">MP4 ↗</span>
-                            </a>
-                            <div class="resource-card">
-                                <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;"><rect x="6" y="8" width="12" height="8" rx="1"/><line x1="3" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="21" y2="12"/><line x1="9" y1="6" x2="15" y2="6"/></svg></div>
-                                <div class="resource-info">
-                                    <h4>Gym Workout Log</h4>
-                                    <p>Strength training & conditioning</p>
                                 </div>
                                 <span class="resource-badge">Coming Soon</span>
                             </div>
@@ -592,225 +665,41 @@
                 </div>
             </div>
 
-            <!-- ==================== PAGE: WEALTH ==================== -->
-            <div class="page" id="page-hr">
-                <div class="page-header-bar">
-                    <h2 class="page-title purple">WEALTH & RESOURCES</h2>
-                    <p class="page-desc">Knowledge base, media resources & personal assets</p>
-                </div>
-
-                <!-- Knowledge Base Section -->
-                <div class="wealth-section">
-                    <div class="section-card hud-panel">
-                        <div class="hud-corner corner-tl"></div>
-                        <div class="hud-corner corner-tr"></div>
-                        <div class="hud-corner corner-bl"></div>
-                        <div class="hud-corner corner-br"></div>
-                        <div class="section-header">
-                            <h3 class="section-title purple">KNOWLEDGE BASE</h3>
-                        </div>
-                        <div class="resource-grid">
-                            <div class="resource-card" onclick="toggleKnowledge('alan-chen')">
-                                <div class="resource-icon">📚</div>
-                                <div class="resource-info">
-                                    <h4>Alan Chen Knowledge</h4>
-                                    <p>Science & tech industry analysis</p>
-                                </div>
-                                <span class="resource-arrow">›</span>
-                            </div>
-                            <div class="knowledge-expand" id="kb-alan-chen"></div>
-
-                            <div class="resource-card" onclick="toggleKnowledge('hrbp')">
-                                <div class="resource-icon">📋</div>
-                                <div class="resource-info">
-                                    <h4>HRBP 2026 Knowledge</h4>
-                                    <p>HR business partner insights</p>
-                                </div>
-                                <span class="resource-arrow">›</span>
-                            </div>
-                            <div class="knowledge-expand" id="kb-hrbp"></div>
-
-                            <div class="resource-card" onclick="toggleKnowledge('kneerecon')">
-                                <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;"><path d="M12 2v6m0 4v10M8 8h8M6 14h12M9 18h6"/></svg></div>
-                                <div class="resource-info">
-                                    <h4>Knee Recon Knowledge</h4>
-                                    <p>Knee reconstruction & rehab</p>
-                                </div>
-                                <span class="resource-arrow">›</span>
-                            </div>
-                            <div class="knowledge-expand" id="kb-kneerecon"></div>
-
-                            <div class="resource-card" onclick="toggleKnowledge('daily')">
-                                <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-                                <div class="resource-info">
-                                    <h4>Daily Memory (2026-03-28)</h4>
-                                    <p>Daily log & notes</p>
-                                </div>
-                                <span class="resource-arrow">›</span>
-                            </div>
-                            <div class="knowledge-expand" id="kb-daily"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Rehab Videos Section -->
-                <div class="wealth-section">
-                    <div class="section-card hud-panel">
-                        <div class="hud-corner corner-tl"></div>
-                        <div class="hud-corner corner-tr"></div>
-                        <div class="hud-corner corner-bl"></div>
-                        <div class="hud-corner corner-br"></div>
-                        <div class="section-header">
-                            <h3 class="section-title orange">REHAB VIDEOS</h3>
-                        </div>
-                        <div class="resource-grid">
-                            <a class="resource-card resource-link" href="https://pub-215b2e32675e4432b2ff9f10dd54e01d.r2.dev/rehab_1.mp4" target="_blank" rel="noopener">
-                                <div class="resource-icon">🏃</div>
-                                <div class="resource-info">
-                                    <h4>Rehab Video 1</h4>
-                                    <p>Account 2 (Ycc702) - R2 Storage</p>
-                                </div>
-                                <span class="resource-badge">MP4 ↗</span>
-                            </a>
-                            <a class="resource-card resource-link" href="https://pub-215b2e32675e4432b2ff9f10dd54e01d.r2.dev/rehab_2.mp4" target="_blank" rel="noopener">
-                                <div class="resource-icon">🏃</div>
-                                <div class="resource-info">
-                                    <h4>Rehab Video 2</h4>
-                                    <p>Account 2 (Ycc702) - R2 Storage</p>
-                                </div>
-                                <span class="resource-badge">MP4 ↗</span>
-                            </a>
-                            <a class="resource-card resource-link" href="https://pub-215b2e32675e4432b2ff9f10dd54e01d.r2.dev/rehab_3.mp4" target="_blank" rel="noopener">
-                                <div class="resource-icon">🏃</div>
-                                <div class="resource-info">
-                                    <h4>Rehab Video 3</h4>
-                                    <p>Account 2 (Ycc702) - R2 Storage</p>
-                                </div>
-                                <span class="resource-badge">MP4 ↗</span>
-                            </a>
-                            <a class="resource-card resource-link" href="https://pub-215b2e32675e4432b2ff9f10dd54e01d.r2.dev/rehab_4.mp4" target="_blank" rel="noopener">
-                                <div class="resource-icon">🏃</div>
-                                <div class="resource-info">
-                                    <h4>Rehab Video 4</h4>
-                                    <p>Account 2 (Ycc702) - R2 Storage</p>
-                                </div>
-                                <span class="resource-badge">MP4 ↗</span>
-                            </a>
-                            <a class="resource-card resource-link" href="https://pub-215b2e32675e4432b2ff9f10dd54e01d.r2.dev/rehab_5.mp4" target="_blank" rel="noopener">
-                                <div class="resource-icon">🏃</div>
-                                <div class="resource-info">
-                                    <h4>Rehab Video 5</h4>
-                                    <p>Account 2 (Ycc702) - R2 Storage</p>
-                                </div>
-                                <span class="resource-badge">MP4 ↗</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- English Learning Section -->
-                <div class="wealth-section">
-                    <div class="section-card hud-panel">
-                        <div class="hud-corner corner-tl"></div>
-                        <div class="hud-corner corner-tr"></div>
-                        <div class="hud-corner corner-bl"></div>
-                        <div class="hud-corner corner-br"></div>
-                        <div class="section-header">
-                            <h3 class="section-title green">ENGLISH LEARNING</h3>
-                        </div>
-                        <div class="resource-grid">
-                            <div class="resource-card resource-info-card">
-                                <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;"><circle cx="12" cy="8" r="3"/><path d="M12 11v8M9 19h6"/></svg></div>
-                                <div class="resource-info">
-                                    <h4>Podcast with Claire - Episode 1</h4>
-                                    <p>Account 2 - English Podcast Series</p>
-                                </div>
-                                <span class="resource-badge">Available ↗</span>
-                            </div>
-                            <div class="resource-card resource-info-card">
-                                <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-                                <div class="resource-info">
-                                    <h4>Module Videos (6 episodes)</h4>
-                                    <p>Professional English Communication</p>
-                                </div>
-                                <span class="resource-badge">Coming Soon</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sports Section -->
-                <div class="wealth-section">
-                    <div class="section-card hud-panel">
-                        <div class="hud-corner corner-tl"></div>
-                        <div class="hud-corner corner-tr"></div>
-                        <div class="hud-corner corner-bl"></div>
-                        <div class="hud-corner corner-br"></div>
-                        <div class="section-header">
-                            <h3 class="section-title yellow">SPORTS & FITNESS</h3>
-                        </div>
-                        <div class="resource-grid">
-                            <a class="resource-card resource-link" href="https://pub-215b2e32675e4432b2ff9f10dd54e01d.r2.dev/basketball_shooting_range.mp4" target="_blank" rel="noopener">
-                                <div class="resource-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;"><circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></div>
-                                <div class="resource-info">
-                                    <h4>Basketball Shooting Range</h4>
-                                    <p>Account 2 - R2 Storage</p>
-                                </div>
-                                <span class="resource-badge">MP4 ↗</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </main>
 
-        <!-- Video Detail Modal -->
-        <div class="modal-overlay" id="videoModal">
-            <div class="modal-content hud-panel">
-                <div class="hud-corner corner-tl"></div>
-                <div class="hud-corner corner-tr"></div>
-                <div class="hud-corner corner-bl"></div>
-                <div class="hud-corner corner-br"></div>
-                <div class="modal-header">
-                    <h3 class="modal-title" id="modal-title"></h3>
-                    <button class="modal-close" onclick="closeModal()">✕</button>
+        <!-- Video Modal -->
+        <div id="videoModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeVideoModal()">✕</button>
+                <div class="modal-body">
+                    <h3 id="modalTitle"></h3>
+                    <p id="modalDesc"></p>
+                    <a id="modalLink" href="#" target="_blank" rel="noopener" class="modal-link">Watch on YouTube ↗</a>
                 </div>
-                <div class="modal-body" id="modal-body"></div>
             </div>
         </div>
 
-        <!-- Bottom Navigation -->
-        <nav class="bottom-nav">
-            <div class="nav-items">
-                <button class="nav-item active" data-page="main" title="Main Dashboard">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                    <span class="nav-label">MAIN</span>
-                    <span class="nav-dot"></span>
-                </button>
-                <button class="nav-item" data-page="wealth" title="Wealth & Resources">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                    <span class="nav-label">WEALTH</span>
-                </button>
-                <button class="nav-item" data-page="intel" title="Intel Center">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    <span class="nav-label">INTEL</span>
-                </button>
-                <button class="nav-item" data-page="life" title="Life & Portfolio">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-                    <span class="nav-label">LIFE</span>
-                </button>
-                <button class="nav-item" data-page="upload" title="File Upload">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                    <span class="nav-label">UPLOAD</span>
-                </button>
-                <button class="nav-item" data-page="hr" title="HR & Learning">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    <span class="nav-label">HR</span>
-                </button>
+        <!-- JARVIS Activation Overlay -->
+        <div id="jarvisActivation" class="jarvis-overlay">
+            <div class="jarvis-content">
+                <h1 class="jarvis-title">TACTICAL OS V2.6</h1>
+                <p class="jarvis-subtitle">JARVIS COMMAND CENTER</p>
+                <div class="arc-reactor">
+                    <div class="arc-ring"></div>
+                    <div class="arc-ring"></div>
+                    <div class="arc-ring"></div>
+                </div>
+                <button id="activateJarvisBtn" class="jarvis-btn">▶ ACTIVATE JARVIS</button>
+                <p class="jarvis-hint">Click to initialize system & enable ambient audio</p>
             </div>
-        </nav>
+        </div>
+
+        <!-- Audio Element -->
+        <audio id="ambientAudio" loop preload="none">
+            <source src="https://pub-073128b2334d45f995dbaf2f0e148bb2.r2.dev/audio/ironman_back_in_black.mp3" type="audio/mpeg">
+        </audio>
     </div>
 
-    <script src="app.js?v=20260426e"></script>
+    <script src="app.js?v=20260426f"></script>
 </body>
 </html>
