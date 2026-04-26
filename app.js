@@ -2491,54 +2491,160 @@ async function uploadFile(file) {
     progressDiv.style.display = 'block';
     resultDiv.style.display = 'none';
     progressFill.style.width = '0%';
-    progressText.textContent = 'Uploading ' + file.name + '...';
+    progressText.textContent = 'Preparing upload: ' + file.name + '...';
     
+    const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB
+    const DIRECT_UPLOAD_LIMIT = 10 * 1024 * 1024; // 10MB
+    
+    try {
+        // Use direct upload for small files
+        if (file.size <= DIRECT_UPLOAD_LIMIT) {
+            await uploadFileDirectly(file, folder, progressFill, progressText);
+        } else {
+            // Use multipart upload for large files
+            await uploadFileMultipart(file, folder, CHUNK_SIZE, progressFill, progressText);
+        }
+        
+        // Show result
+        progressDiv.style.display = 'none';
+        resultDiv.style.display = 'block';
+    } catch (error) {
+        progressDiv.style.display = 'none';
+        progressText.textContent = 'Error: ' + error.message;
+        alert('Upload failed: ' + error.message);
+    }
+}
+
+async function uploadFileDirectly(file, folder, progressFill, progressText) {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('folder', folder);
     
-    const xhr = new XMLHttpRequest();
-    
-    xhr.upload.addEventListener('progress', (e) => {
-        if (e.lengthComputable) {
-            const percentComplete = (e.loaded / e.total) * 100;
-            progressFill.style.width = percentComplete + '%';
-            progressText.textContent = Math.round(percentComplete) + '%';
-        }
-    });
-    
-    xhr.addEventListener('load', () => {
-        try {
-            if (xhr.status === 200) {
-                const response = JSON.parse(xhr.responseText);
-                if (response.ok && response.url) {
-                    progressDiv.style.display = 'none';
-                    resultDiv.style.display = 'block';
-                    resultUrl.value = response.url;
-                } else {
-                    progressDiv.style.display = 'none';
-                    progressText.textContent = 'Error: ' + (response.error || 'Upload failed');
-                    alert('Upload failed: ' + (response.error || 'Unknown error'));
-                }
-            } else {
-                progressDiv.style.display = 'none';
-                progressText.textContent = 'Error: HTTP ' + xhr.status;
-                alert('Upload failed: HTTP ' + xhr.status);
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        
+        xhr.upload.addEventListener('progress', (e) => {
+            if (e.lengthComputable) {
+                const percentComplete = (e.loaded / e.total) * 100;
+                progressFill.style.width = percentComplete + '%';
+                progressText.textContent = Math.round(percentComplete) + '%';
             }
-        } catch (parseErr) {
-            progressDiv.style.display = 'none';
-            alert('Upload failed: Could not parse response');
+        });
+        
+        xhr.addEventListener('load', () => {
+            try {
+                if (xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.ok && response.url) {
+                        const resultUrl = document.getElementById('resultUrl');
+                        resultUrl.value = response.url;
+                        resolve(response);
+                    } else {
+                        reject(new Error(response.error || 'Upload failed'));
+                    }
+                } else {
+                    reject(new Error('HTTP ' + xhr.status));
+                }
+            } catch (parseErr) {
+                reject(new Error('Could not parse response'));
+            }
+        });
+        
+        xhr.addEventListener('error', () => {
+            reject(new Error('Network error'));
+        });
+        
+        xhr.open('POST', '/api/upload');
+        xhr.send(formData);
+    });
+}
+
+async function uploadFileMultipart(file, folder, chunkSize, progressFill, progressText) {
+    const resultUrl = document.getElementById('resultUrl');
+    const progressDiv = document.getElementById('uploadProgress');
+    
+    try {
+        // Step 1: Create multipart upload session
+        progressText.textContent = 'Initializing multipart upload...';
+        const createResponse = await fetch('/api/upload/create-multipart', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                fileName: file.name,
+                folder: folder,
+                contentType: file.type || 'application/octet-stream',
+                totalSize: file.size,
+            }),
+        });
+        
+        if (!createResponse.ok) {
+            const error = await createResponse.json();
+            throw new Error(error.error || 'Failed to create multipart upload');
         }
-    });
-    
-    xhr.addEventListener('error', () => {
-        progressDiv.style.display = 'none';
-        progressText.textContent = 'Network error';
-        alert('Upload failed: Network error');
-    });
-    
-    xhr.open('POST', '/api/upload');
-    xhr.send(formData);
+        
+        const { uploadId, key, totalParts, publicUrl } = await createResponse.json();
+        
+        // Step 2: Upload each part
+        const uploadedParts = [];
+        let totalUploaded = 0;
+        
+        for (let partNumber = 1; partNumber <= totalParts; partNumber++) {
+            const start = (partNumber - 1) * chunkSize;
+            const end = Math.min(start + chunkSize, file.size);
+            const chunk = file.slice(start, end);
+            
+            progressText.textContent = `Uploading part ${partNumber}/${totalParts}...`;
+            
+            const partFormData = new FormData();
+            partFormData.append('uploadId', uploadId);
+            partFormData.append('key', key);
+            partFormData.append('partNumber', partNumber);
+            partFormData.append('chunk', chunk);
+            
+            const partResponse = await fetch('/api/upload/upload-part', {
+                method: 'POST',
+                body: partFormData,
+            });
+            
+            if (!partResponse.ok) {
+                const error = await partResponse.json();
+                throw new Error(error.error || `Failed to upload part ${partNumber}`);
+            }
+            
+            const { etag } = await partResponse.json();
+            uploadedParts.push({ partNumber, etag });
+            
+            totalUploaded += (end - start);
+            const percentComplete = (totalUploaded / file.size) * 100;
+            progressFill.style.width = percentComplete + '%';
+            progressText.textContent = Math.round(percentComplete) + '% (Part ' + partNumber + '/' + totalParts + ')';
+        }
+        
+        // Step 3: Complete multipart upload
+        progressText.textContent = 'Finalizing upload...';
+        const completeResponse = await fetch('/api/upload/complete-multipart', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                uploadId,
+                key,
+                parts: uploadedParts,
+            }),
+        });
+        
+        if (!completeResponse.ok) {
+            const error = await completeResponse.json();
+            throw new Error(error.error || 'Failed to complete multipart upload');
+        }
+        
+        const { url } = await completeResponse.json();
+        resultUrl.value = url;
+        progressFill.style.width = '100%';
+        progressText.textContent = 'Upload complete!';
+        
+    } catch (error) {
+        throw error;
+    }
 }
 
 // Refresh market data every 90 seconds
