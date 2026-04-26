@@ -61,6 +61,7 @@ async function fng() {
 export async function onRequestGet() {
   const [
     vix, usdtwd, spy, qqq, voo, nvda, tsm, tsla, smh, pave, gold, oil, fearGreed,
+    vti, vxus, taiex, sp500,
   ] = await Promise.all([
     yahoo("^VIX"),
     yahoo("USDTWD=X"),
@@ -75,6 +76,10 @@ export async function onRequestGet() {
     yahoo("GC=F"),
     yahoo("CL=F"),
     fng(),
+    yahoo("VTI"),
+    yahoo("VXUS"),
+    yahoo("^TWII"),
+    yahoo("^GSPC"),
   ]);
 
   const body = JSON.stringify({
@@ -82,7 +87,7 @@ export async function onRequestGet() {
     updated: new Date().toISOString(),
     data: {
       vix, usdtwd, spy, qqq, voo, nvda, tsm, tsla, smh, pave, gold, oil,
-      fearGreed,
+      fearGreed, vti, vxus, taiex, sp500,
     },
   });
 
