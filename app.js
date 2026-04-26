@@ -2478,6 +2478,59 @@ function initUploadFunctionality() {
             }, 2000);
         });
     }
+    
+    // Load uploaded files list
+    loadUploadedFilesList();
+}
+
+async function loadUploadedFilesList() {
+    const filesList = document.getElementById('uploadedFilesList');
+    if (!filesList) return;
+    
+    try {
+        const response = await fetch('/api/files');
+        if (!response.ok) throw new Error('Failed to fetch files');
+        
+        const data = await response.json();
+        const files = data.files || [];
+        
+        if (files.length === 0) {
+            filesList.innerHTML = '<p style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted); text-align:center; padding:20px 0;">No files uploaded yet</p>';
+            return;
+        }
+        
+        let html = '<div style="display:grid; gap:8px;">';
+        files.forEach(file => {
+            const fileName = file.key.split('/').pop();
+            const fileSize = (file.size / 1024 / 1024).toFixed(2);
+            const publicUrl = 'https://pub-073128b2334d45f995dbaf2f0e148bb2.r2.dev/' + file.key;
+            
+            html += `
+                <div style="padding:12px; background:rgba(0,210,211,0.05); border:1px solid rgba(0,210,211,0.2); border-radius:6px; display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                    <div style="flex:1; min-width:0;">
+                        <p style="font-family:var(--font-mono); font-size:0.75rem; color:var(--neon-cyan); word-break:break-all; margin:0;">${fileName}</p>
+                        <p style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text-muted); margin:4px 0 0 0;">${fileSize} MB</p>
+                    </div>
+                    <button onclick="copyToClipboard('${publicUrl}')" style="padding:6px 12px; background:rgba(0,210,211,0.15); border:1px solid rgba(0,210,211,0.4); border-radius:4px; color:var(--neon-cyan); font-family:var(--font-mono); font-size:0.65rem; font-weight:600; cursor:pointer; white-space:nowrap; flex-shrink:0;">📋 COPY</button>
+                    <a href="${publicUrl}" target="_blank" style="padding:6px 12px; background:rgba(0,210,211,0.15); border:1px solid rgba(0,210,211,0.4); border-radius:4px; color:var(--neon-cyan); font-family:var(--font-mono); font-size:0.65rem; font-weight:600; text-decoration:none; white-space:nowrap; flex-shrink:0;">🔗 OPEN</a>
+                </div>
+            `;
+        });
+        html += '</div>';
+        filesList.innerHTML = html;
+    } catch (error) {
+        filesList.innerHTML = '<p style="font-family:var(--font-mono); font-size:0.8rem; color:var(--neon-red); text-align:center; padding:20px 0;">Error loading files: ' + error.message + '</p>';
+    }
+}
+
+function copyToClipboard(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    alert('URL copied to clipboard!');
 }
 
 async function uploadFile(file) {
@@ -2641,6 +2694,11 @@ async function uploadFileMultipart(file, folder, chunkSize, progressFill, progre
         resultUrl.value = url;
         progressFill.style.width = '100%';
         progressText.textContent = 'Upload complete!';
+        
+        // Refresh file list after upload
+        setTimeout(() => {
+            loadUploadedFilesList();
+        }, 500);
         
     } catch (error) {
         throw error;
