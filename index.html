@@ -56,6 +56,23 @@
             <!-- ==================== PAGE: MAIN ==================== -->
             <div class="page active" id="page-main">
                 
+                <!-- Greeting & Weather Bar -->
+                <div class="greeting-bar hud-panel" style="padding:12px 16px; margin-bottom:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                    <div class="hud-corner corner-tl"></div>
+                    <div class="hud-corner corner-tr"></div>
+                    <div class="hud-corner corner-bl"></div>
+                    <div class="hud-corner corner-br"></div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-family:var(--font-mono); font-size:0.85rem; color:var(--neon-cyan); letter-spacing:1px;" id="greetingText">Good morning, Commander</span>
+                        <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);" id="greetingTime"></span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span id="weatherIcon" style="font-size:1.2rem;">🌤️</span>
+                        <span id="weatherTemp" style="font-family:var(--font-mono); font-size:0.85rem; color:var(--neon-yellow);">--°C</span>
+                        <span style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text-muted); letter-spacing:1px;">HSINCHU</span>
+                    </div>
+                </div>
+
                 <!-- Data Cards Row — Real-time market data -->
                 <div class="data-cards-container">
                     <div class="data-cards-row">
@@ -99,6 +116,37 @@
                             <div class="card-body">
                                 <span class="card-value" id="usdtwd-value">--</span>
                                 <span class="card-change neutral" id="usdtwd-change">loading</span>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Second row: TAIEX + S&P 500 -->
+                    <div class="data-cards-row" style="margin-top:10px;">
+                        <a href="https://www.google.com/finance/quote/TAIEX:TPE" target="_blank" rel="noopener" class="data-card card-taiex hud-panel" id="card-taiex" style="border-color: rgba(254, 202, 87, 0.25);">
+                            <div class="hud-corner corner-tl"></div>
+                            <div class="hud-corner corner-tr"></div>
+                            <div class="hud-corner corner-bl"></div>
+                            <div class="hud-corner corner-br"></div>
+                            <div class="card-header">
+                                <span class="card-label" style="color:var(--neon-yellow);">TAIEX</span>
+                                <span class="card-icon">↗</span>
+                            </div>
+                            <div class="card-body">
+                                <span class="card-value" id="taiex-value">--</span>
+                                <span class="card-change neutral" id="taiex-change">loading</span>
+                            </div>
+                        </a>
+                        <a href="https://www.google.com/finance/quote/.INX:INDEXSP" target="_blank" rel="noopener" class="data-card card-sp500 hud-panel" id="card-sp500" style="border-color: rgba(168, 85, 247, 0.25);">
+                            <div class="hud-corner corner-tl"></div>
+                            <div class="hud-corner corner-tr"></div>
+                            <div class="hud-corner corner-bl"></div>
+                            <div class="hud-corner corner-br"></div>
+                            <div class="card-header">
+                                <span class="card-label" style="color:var(--neon-purple);">S&P 500</span>
+                                <span class="card-icon">↗</span>
+                            </div>
+                            <div class="card-body">
+                                <span class="card-value" id="sp500-value">--</span>
+                                <span class="card-change neutral" id="sp500-change">loading</span>
                             </div>
                         </a>
                     </div>
@@ -238,6 +286,295 @@
                 <!-- Video List -->
                 <div class="video-list" id="intel-video-list">
                     <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- ==================== PAGE: LIFE ==================== -->
+            <div class="page" id="page-life">
+                <div class="page-header-bar">
+                    <h2 class="page-title cyan">LIFE & PORTFOLIO</h2>
+                    <p class="page-desc">Personal life management — rehab, learning, sports & investments</p>
+                </div>
+
+                <!-- Investment Portfolio Section -->
+                <div class="wealth-section">
+                    <div class="section-card hud-panel">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="section-header">
+                            <h3 class="section-title green">INVESTMENT PORTFOLIO</h3>
+                        </div>
+                        <div class="data-cards-row" style="grid-template-columns: repeat(2, 1fr);">
+                            <a href="https://www.google.com/finance/quote/VOO:NYSEARCA" target="_blank" rel="noopener" class="data-card hud-panel" style="border-color: rgba(0, 210, 211, 0.25); text-decoration:none; color:inherit;">
+                                <div class="hud-corner corner-tl"></div>
+                                <div class="hud-corner corner-tr"></div>
+                                <div class="hud-corner corner-bl"></div>
+                                <div class="hud-corner corner-br"></div>
+                                <div class="card-header">
+                                    <span class="card-label" style="color:var(--neon-green);">VOO</span>
+                                    <span class="card-icon">↗</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="card-value" id="portfolio-voo">--</span>
+                                    <span class="card-change neutral" id="portfolio-voo-change">loading</span>
+                                </div>
+                            </a>
+                            <a href="https://www.google.com/finance/quote/QQQ:NASDAQ" target="_blank" rel="noopener" class="data-card hud-panel" style="border-color: rgba(168, 85, 247, 0.25); text-decoration:none; color:inherit;">
+                                <div class="hud-corner corner-tl"></div>
+                                <div class="hud-corner corner-tr"></div>
+                                <div class="hud-corner corner-bl"></div>
+                                <div class="hud-corner corner-br"></div>
+                                <div class="card-header">
+                                    <span class="card-label" style="color:var(--neon-purple);">QQQ</span>
+                                    <span class="card-icon">↗</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="card-value" id="portfolio-qqq">--</span>
+                                    <span class="card-change neutral" id="portfolio-qqq-change">loading</span>
+                                </div>
+                            </a>
+                            <a href="https://www.google.com/finance/quote/VTI:NYSEARCA" target="_blank" rel="noopener" class="data-card hud-panel" style="border-color: rgba(10, 189, 227, 0.25); text-decoration:none; color:inherit;">
+                                <div class="hud-corner corner-tl"></div>
+                                <div class="hud-corner corner-tr"></div>
+                                <div class="hud-corner corner-bl"></div>
+                                <div class="hud-corner corner-br"></div>
+                                <div class="card-header">
+                                    <span class="card-label" style="color:var(--neon-cyan);">VTI</span>
+                                    <span class="card-icon">↗</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="card-value" id="portfolio-vti">--</span>
+                                    <span class="card-change neutral" id="portfolio-vti-change">loading</span>
+                                </div>
+                            </a>
+                            <a href="https://www.google.com/finance/quote/VXUS:NYSEARCA" target="_blank" rel="noopener" class="data-card hud-panel" style="border-color: rgba(255, 159, 67, 0.25); text-decoration:none; color:inherit;">
+                                <div class="hud-corner corner-tl"></div>
+                                <div class="hud-corner corner-tr"></div>
+                                <div class="hud-corner corner-bl"></div>
+                                <div class="hud-corner corner-br"></div>
+                                <div class="card-header">
+                                    <span class="card-label" style="color:var(--neon-orange);">VXUS</span>
+                                    <span class="card-icon">↗</span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="card-value" id="portfolio-vxus">--</span>
+                                    <span class="card-change neutral" id="portfolio-vxus-change">loading</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Knee Rehab Section -->
+                <div class="wealth-section">
+                    <div class="section-card hud-panel">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="section-header">
+                            <h3 class="section-title orange">KNEE REHAB TRACKER</h3>
+                        </div>
+                        <div class="resource-grid">
+                            <a class="resource-card resource-link" href="https://pub-215b2e32675e4432b2ff9f10dd54e01d.r2.dev/rehab_1.mp4" target="_blank" rel="noopener">
+                                <div class="resource-icon">🦵</div>
+                                <div class="resource-info">
+                                    <h4>Rehab Session 1</h4>
+                                    <p>Knee reconstruction recovery — Phase 1</p>
+                                </div>
+                                <span class="resource-badge">MP4 ↗</span>
+                            </a>
+                            <a class="resource-card resource-link" href="https://pub-215b2e32675e4432b2ff9f10dd54e01d.r2.dev/rehab_2.mp4" target="_blank" rel="noopener">
+                                <div class="resource-icon">🦵</div>
+                                <div class="resource-info">
+                                    <h4>Rehab Session 2</h4>
+                                    <p>Knee reconstruction recovery — Phase 2</p>
+                                </div>
+                                <span class="resource-badge">MP4 ↗</span>
+                            </a>
+                            <a class="resource-card resource-link" href="https://pub-215b2e32675e4432b2ff9f10dd54e01d.r2.dev/rehab_3.mp4" target="_blank" rel="noopener">
+                                <div class="resource-icon">🦵</div>
+                                <div class="resource-info">
+                                    <h4>Rehab Session 3</h4>
+                                    <p>Knee reconstruction recovery — Phase 3</p>
+                                </div>
+                                <span class="resource-badge">MP4 ↗</span>
+                            </a>
+                            <a class="resource-card resource-link" href="https://pub-215b2e32675e4432b2ff9f10dd54e01d.r2.dev/rehab_4.mp4" target="_blank" rel="noopener">
+                                <div class="resource-icon">🦵</div>
+                                <div class="resource-info">
+                                    <h4>Rehab Session 4</h4>
+                                    <p>Knee reconstruction recovery — Phase 4</p>
+                                </div>
+                                <span class="resource-badge">MP4 ↗</span>
+                            </a>
+                            <a class="resource-card resource-link" href="https://pub-215b2e32675e4432b2ff9f10dd54e01d.r2.dev/rehab_5.mp4" target="_blank" rel="noopener">
+                                <div class="resource-icon">🦵</div>
+                                <div class="resource-info">
+                                    <h4>Rehab Session 5</h4>
+                                    <p>Knee reconstruction recovery — Phase 5</p>
+                                </div>
+                                <span class="resource-badge">MP4 ↗</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- English Learning Section -->
+                <div class="wealth-section">
+                    <div class="section-card hud-panel">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="section-header">
+                            <h3 class="section-title green">ENGLISH LEARNING</h3>
+                        </div>
+                        <div class="resource-grid">
+                            <div class="resource-card">
+                                <div class="resource-icon">🎙️</div>
+                                <div class="resource-info">
+                                    <h4>Podcast with Claire — Episode 1</h4>
+                                    <p>English Podcast Series — R2 Storage</p>
+                                </div>
+                                <span class="resource-badge">Available ↗</span>
+                            </div>
+                            <div class="resource-card">
+                                <div class="resource-icon">📱</div>
+                                <div class="resource-info">
+                                    <h4>Wi-Engage English App</h4>
+                                    <p>Wistron English learning application</p>
+                                </div>
+                                <span class="resource-badge">App</span>
+                            </div>
+                            <div class="resource-card">
+                                <div class="resource-icon">📅</div>
+                                <div class="resource-info">
+                                    <h4>Module Videos (6 episodes)</h4>
+                                    <p>Professional English Communication</p>
+                                </div>
+                                <span class="resource-badge">Coming Soon</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sports & Fitness Section -->
+                <div class="wealth-section">
+                    <div class="section-card hud-panel">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="section-header">
+                            <h3 class="section-title yellow">SPORTS & FITNESS</h3>
+                        </div>
+                        <div class="resource-grid">
+                            <a class="resource-card resource-link" href="https://pub-215b2e32675e4432b2ff9f10dd54e01d.r2.dev/basketball_shooting_range.mp4" target="_blank" rel="noopener">
+                                <div class="resource-icon">🏀</div>
+                                <div class="resource-info">
+                                    <h4>Basketball Shooting Range</h4>
+                                    <p>R2 Storage — Training video</p>
+                                </div>
+                                <span class="resource-badge">MP4 ↗</span>
+                            </a>
+                            <div class="resource-card">
+                                <div class="resource-icon">🏋️</div>
+                                <div class="resource-info">
+                                    <h4>Gym Workout Log</h4>
+                                    <p>Strength training & conditioning</p>
+                                </div>
+                                <span class="resource-badge">Coming Soon</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== PAGE: UPLOAD ==================== -->
+            <div class="page" id="page-upload">
+                <div class="page-header-bar">
+                    <h2 class="page-title purple">R2 FILE MANAGER</h2>
+                    <p class="page-desc">Upload files to Cloudflare R2 Storage</p>
+                </div>
+
+                <!-- Access Code Overlay -->
+                <div id="uploadAccessOverlay" style="display:block;">
+                    <div class="section-card hud-panel" style="max-width:400px; margin:40px auto; text-align:center;">
+                        <div class="hud-corner corner-tl"></div>
+                        <div class="hud-corner corner-tr"></div>
+                        <div class="hud-corner corner-bl"></div>
+                        <div class="hud-corner corner-br"></div>
+                        <div class="section-header">
+                            <h3 class="section-title red">ACCESS RESTRICTED</h3>
+                        </div>
+                        <div style="padding:20px 0;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="var(--neon-red)" stroke-width="2" style="width:48px; height:48px; margin-bottom:16px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            <p style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted); margin-bottom:16px; letter-spacing:1px;">ENTER ACCESS CODE TO CONTINUE</p>
+                            <input type="password" id="uploadAccessCode" placeholder="Enter access code..." style="width:80%; padding:10px 16px; background:rgba(0,210,211,0.05); border:1px solid rgba(255,71,87,0.3); border-radius:8px; color:var(--text-primary); font-family:var(--font-mono); font-size:0.9rem; text-align:center; margin-bottom:12px; outline:none;">
+                            <br>
+                            <button id="uploadAccessBtn" style="padding:10px 32px; background:rgba(255,71,87,0.15); border:1px solid rgba(255,71,87,0.5); border-radius:8px; color:var(--neon-red); font-family:var(--font-mono); font-size:0.8rem; font-weight:600; letter-spacing:2px; cursor:pointer; transition:all 0.3s;">AUTHENTICATE</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Interface (hidden until authenticated) -->
+                <div id="uploadInterface" style="display:none;">
+                    <div class="wealth-section">
+                        <div class="section-card hud-panel">
+                            <div class="hud-corner corner-tl"></div>
+                            <div class="hud-corner corner-tr"></div>
+                            <div class="hud-corner corner-bl"></div>
+                            <div class="hud-corner corner-br"></div>
+                            <div class="section-header">
+                                <h3 class="section-title green">UPLOAD TO R2</h3>
+                            </div>
+
+                            <!-- Folder Selection -->
+                            <div style="margin-bottom:16px;">
+                                <label style="font-family:var(--font-mono); font-size:0.7rem; color:var(--text-muted); letter-spacing:1px; display:block; margin-bottom:6px;">TARGET FOLDER</label>
+                                <select id="uploadFolder" style="width:100%; padding:10px 12px; background:rgba(0,210,211,0.05); border:1px solid rgba(0,210,211,0.3); border-radius:8px; color:var(--text-primary); font-family:var(--font-mono); font-size:0.85rem; outline:none; cursor:pointer;">
+                                    <option value="memory/">memory/</option>
+                                    <option value="audio/">audio/</option>
+                                    <option value="videos/">videos/</option>
+                                    <option value="images/">images/</option>
+                                    <option value="documents/">documents/</option>
+                                    <option value="">Root (no folder)</option>
+                                </select>
+                            </div>
+
+                            <!-- Drop Zone -->
+                            <div id="uploadDropZone" style="border:2px dashed rgba(0,210,211,0.3); border-radius:12px; padding:40px 20px; text-align:center; cursor:pointer; transition:all 0.3s; margin-bottom:16px;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="var(--neon-cyan)" stroke-width="2" style="width:48px; height:48px; margin-bottom:12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                <p style="font-family:var(--font-mono); font-size:0.85rem; color:var(--neon-cyan); margin-bottom:4px;">DROP FILES HERE</p>
+                                <p style="font-family:var(--font-mono); font-size:0.7rem; color:var(--text-muted);">or click to browse</p>
+                                <input type="file" id="uploadFileInput" style="display:none;">
+                            </div>
+
+                            <!-- Upload Progress -->
+                            <div id="uploadProgress" style="display:none; margin-bottom:16px;">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                                    <span style="font-family:var(--font-mono); font-size:0.7rem; color:var(--text-muted); letter-spacing:1px;">UPLOADING</span>
+                                    <span id="progressText" style="font-family:var(--font-mono); font-size:0.7rem; color:var(--neon-cyan);">0%</span>
+                                </div>
+                                <div style="width:100%; height:6px; background:rgba(0,210,211,0.1); border-radius:3px; overflow:hidden;">
+                                    <div id="progressFill" style="width:0%; height:100%; background:linear-gradient(90deg, var(--neon-cyan), var(--neon-green)); border-radius:3px; transition:width 0.3s;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Upload Result -->
+                            <div id="uploadResult" style="display:none; padding:16px; background:rgba(0,210,211,0.05); border:1px solid rgba(0,210,211,0.3); border-radius:8px;">
+                                <p style="font-family:var(--font-mono); font-size:0.7rem; color:var(--neon-green); letter-spacing:1px; margin-bottom:8px;">✅ UPLOAD COMPLETE</p>
+                                <label style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text-muted); letter-spacing:1px; display:block; margin-bottom:4px;">PUBLIC URL</label>
+                                <div style="display:flex; gap:8px;">
+                                    <input type="text" id="resultUrl" readonly style="flex:1; padding:8px 12px; background:rgba(10,14,26,0.6); border:1px solid var(--border-color); border-radius:6px; color:var(--neon-cyan); font-family:var(--font-mono); font-size:0.75rem; outline:none;">
+                                    <button id="copyUrlBtn" style="padding:8px 16px; background:rgba(0,210,211,0.15); border:1px solid rgba(0,210,211,0.4); border-radius:6px; color:var(--neon-cyan); font-family:var(--font-mono); font-size:0.7rem; font-weight:600; cursor:pointer; white-space:nowrap;">📋 COPY</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
