@@ -1,9 +1,3 @@
-const DIRECT_UPLOAD_LIMIT = 10 * 1024 * 1024;
-
-function sanitizeFileName(fileName) {
-  return fileName.replace(/[^a-zA-Z0-9._\-]/g, '_');
-}
-
 function jsonResponse(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
@@ -33,11 +27,13 @@ export async function onRequest(context) {
   }
 
   const formData = await request.formData();
-  const file = formData.get('file');
-  const folder = formData.get('folder') || 'memory/';
+  const uploadId = formData.get('uploadId');
+  const key = formData.get('key');
+  const partNumber = parseInt(formData.get('partNumber'), 10);
+  const chunk = formData.get('chunk');
 
-  if (!file) {
-    return errorResponse('No file provided', 400);
+  if (!uploadId || !key || !partNumber || !chunk) {
+    return errorResponse('Missing required fields: uploadId, key, partNumber, chunk', 400);
   }
 
   const bucket = env.R2_BUCKET;
@@ -45,15 +41,15 @@ export async function onRequest(context) {
     return errorResponse('R2 bucket not configured', 500);
   }
 
-  const fileName = sanitizeFileName(file.name);
-  const key = folder + fileName;
-
   try {
-    await bucket.put(key, file.stream(), {
-      httpMetadata: { contentType: file.type || 'application/octet-stream' },
+    const multipartUpload = bucket.resumeMultipartUpload(key, uploadId);
+    const uploadedPart = await multipartUpload.uploadPart(partNumber, chunk);
+
+    return jsonResponse({
+      ok: true,
+      partNumber,
+      etag: uploadedPart.etag,
     });
-    const publicUrl = `https://pub-073128b2334d45f995dbaf2f0e148bb2.r2.dev/${key}`;
-    return jsonResponse({ ok: true, url: publicUrl, key, size: file.size });
   } catch (error) {
     return errorResponse(error.message, 500);
   }

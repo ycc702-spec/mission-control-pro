@@ -1,4 +1,4 @@
-const DIRECT_UPLOAD_LIMIT = 10 * 1024 * 1024;
+const CHUNK_SIZE = 5 * 1024 * 1024;
 
 function sanitizeFileName(fileName) {
   return fileName.replace(/[^a-zA-Z0-9._\-]/g, '_');
@@ -32,12 +32,11 @@ export async function onRequest(context) {
     return errorResponse('Method not allowed', 405);
   }
 
-  const formData = await request.formData();
-  const file = formData.get('file');
-  const folder = formData.get('folder') || 'memory/';
+  const body = await request.json();
+  const { fileName, folder = 'memory/', contentType = 'application/octet-stream', totalSize } = body;
 
-  if (!file) {
-    return errorResponse('No file provided', 400);
+  if (!fileName) {
+    return errorResponse('fileName is required', 400);
   }
 
   const bucket = env.R2_BUCKET;
@@ -45,15 +44,24 @@ export async function onRequest(context) {
     return errorResponse('R2 bucket not configured', 500);
   }
 
-  const fileName = sanitizeFileName(file.name);
-  const key = folder + fileName;
+  const sanitizedName = sanitizeFileName(fileName);
+  const key = folder + sanitizedName;
 
   try {
-    await bucket.put(key, file.stream(), {
-      httpMetadata: { contentType: file.type || 'application/octet-stream' },
+    const multipartUpload = await bucket.createMultipartUpload(key, {
+      httpMetadata: { contentType },
     });
-    const publicUrl = `https://pub-073128b2334d45f995dbaf2f0e148bb2.r2.dev/${key}`;
-    return jsonResponse({ ok: true, url: publicUrl, key, size: file.size });
+
+    const totalParts = Math.ceil(totalSize / CHUNK_SIZE);
+
+    return jsonResponse({
+      ok: true,
+      uploadId: multipartUpload.uploadId,
+      key,
+      chunkSize: CHUNK_SIZE,
+      totalParts,
+      publicUrl: `https://pub-073128b2334d45f995dbaf2f0e148bb2.r2.dev/${key}`,
+    });
   } catch (error) {
     return errorResponse(error.message, 500);
   }
