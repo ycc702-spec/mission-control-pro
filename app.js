@@ -1,14 +1,153 @@
-// ===== Tactical OS V2.6 - Full App Logic =====
-// All 63 video records embedded as static JSON data
+// ===== TACTICAL OS V2.6 - JARVIS HUD COMMAND CENTER =====
 
+// Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
+    initAudioSystem();
     initNavigation();
     updateDateTime();
     loadDailyContent();
     renderMacroVideos();
     renderIntelVideos();
     fetchMarketData();
+    initSearchFunctionality();
 });
+
+// ===== AUDIO SYSTEM - Web Audio API Synthesized JARVIS Ambient =====
+let audioContext = null;
+let oscillators = [];
+let isAudioPlaying = false;
+
+function initAudioSystem() {
+    const audioBtn = document.getElementById('audioToggle');
+    if (!audioBtn) return;
+
+    audioBtn.addEventListener('click', toggleAudio);
+    
+    // Try to start audio on first user interaction
+    document.addEventListener('click', startAudioOnFirstInteraction, { once: true });
+}
+
+function startAudioOnFirstInteraction() {
+    if (!isAudioPlaying && audioContext) {
+        resumeAudio();
+    }
+}
+
+function toggleAudio() {
+    if (isAudioPlaying) {
+        stopAudio();
+    } else {
+        startAudio();
+    }
+}
+
+function startAudio() {
+    if (isAudioPlaying) return;
+
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+
+    isAudioPlaying = true;
+    updateAudioButtonUI();
+    createJARVISAmbient();
+}
+
+function stopAudio() {
+    if (!isAudioPlaying) return;
+
+    oscillators.forEach(osc => {
+        try {
+            osc.stop();
+        } catch (e) {}
+    });
+    oscillators = [];
+
+    isAudioPlaying = false;
+    updateAudioButtonUI();
+}
+
+function resumeAudio() {
+    if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+}
+
+function updateAudioButtonUI() {
+    const audioBtn = document.getElementById('audioToggle');
+    const statusEl = audioBtn?.querySelector('.audio-status');
+    if (statusEl) {
+        statusEl.textContent = isAudioPlaying ? 'ON' : 'OFF';
+    }
+}
+
+function createJARVISAmbient() {
+    if (!audioContext) return;
+
+    const now = audioContext.currentTime;
+    const masterGain = audioContext.createGain();
+    masterGain.gain.setValueAtTime(0.15, now);
+    masterGain.connect(audioContext.destination);
+
+    // Low frequency hum (JARVIS signature)
+    const hum = audioContext.createOscillator();
+    hum.frequency.setValueAtTime(55, now);
+    hum.type = 'sine';
+    const humGain = audioContext.createGain();
+    humGain.gain.setValueAtTime(0.1, now);
+    hum.connect(humGain);
+    humGain.connect(masterGain);
+    hum.start(now);
+    oscillators.push(hum);
+
+    // Filtered noise for atmosphere
+    const noiseBuffer = audioContext.createBuffer(1, audioContext.sampleRate * 2, audioContext.sampleRate);
+    const noiseData = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < noiseBuffer.length; i++) {
+        noiseData[i] = Math.random() * 2 - 1;
+    }
+    const noiseSource = audioContext.createBufferSource();
+    noiseSource.buffer = noiseBuffer;
+    noiseSource.loop = true;
+    const noiseFilter = audioContext.createBiquadFilter();
+    noiseFilter.type = 'lowpass';
+    noiseFilter.frequency.setValueAtTime(300, now);
+    const noiseGain = audioContext.createGain();
+    noiseGain.gain.setValueAtTime(0.05, now);
+    noiseSource.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(masterGain);
+    noiseSource.start(now);
+
+    // Periodic sci-fi beeps
+    for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+            if (!isAudioPlaying || !audioContext) return;
+            const beepTime = audioContext.currentTime;
+            const beep = audioContext.createOscillator();
+            beep.frequency.setValueAtTime(800 + i * 200, beepTime);
+            beep.type = 'sine';
+            const beepGain = audioContext.createGain();
+            beepGain.gain.setValueAtTime(0.08, beepTime);
+            beepGain.gain.exponentialRampToValueAtTime(0.01, beepTime + 0.1);
+            beep.connect(beepGain);
+            beepGain.connect(masterGain);
+            beep.start(beepTime);
+            beep.stop(beepTime + 0.1);
+        }, i * 2000);
+    }
+
+    // Loop the ambient sound
+    setTimeout(() => {
+        if (isAudioPlaying) {
+            createJARVISAmbient();
+        }
+    }, 120000); // Restart every 2 minutes
+}
 
 // ===== NAVIGATION =====
 function initNavigation() {
@@ -64,7 +203,7 @@ function updateDateTime() {
     const dateStr = now.toLocaleDateString('en-US', options);
     const subtitle = document.querySelector('.subtitle');
     if (subtitle) {
-        subtitle.innerHTML = `Command. <span class="date-display">${dateStr}</span>`;
+        subtitle.innerHTML = `JARVIS COMMAND CENTER`;
     }
 }
 
@@ -129,7 +268,7 @@ function loadDailyContent() {
     if (quoteZh) quoteZh.textContent = quote.zh;
     if (quoteAuthor) quoteAuthor.textContent = `— ${quote.author}`;
 
-    // Set motivation card link — search the quote author
+    // Set motivation card link
     const motivationCard = document.getElementById('motivationCard');
     if (motivationCard) {
         const searchQuery = encodeURIComponent(quote.author + ' quotes');
@@ -144,7 +283,7 @@ function loadDailyContent() {
     if (historyEvent) historyEvent.textContent = history.event;
     if (historyEventZh) historyEventZh.textContent = history.zh;
 
-    // Set history card link — search the event on Wikipedia
+    // Set history card link
     const historyCard = document.getElementById('historyCard');
     if (historyCard) {
         const searchQuery = encodeURIComponent(history.year + ' ' + history.event);
@@ -157,7 +296,7 @@ function loadDailyContent() {
     if (triviaFact) triviaFact.textContent = trivia.fact;
     if (triviaFactZh) triviaFactZh.textContent = trivia.zh;
 
-    // Set trivia card link — search the fact
+    // Set trivia card link
     const triviaCard = document.getElementById('triviaCard');
     if (triviaCard) {
         const searchQuery = encodeURIComponent(trivia.fact);
@@ -165,7 +304,7 @@ function loadDailyContent() {
     }
 }
 
-// ===== VIDEO DATA (63 records from D1 Database) =====
+// ===== VIDEO DATA (63 records) =====
 const videoData = [
   {
     "video_id": "X_Gf2z33_wg",
@@ -1621,7 +1760,7 @@ const videoData = [
 ];
 
 
-// ===== KNOWLEDGE BASE DATA (from R2 Storage) =====
+// ===== KNOWLEDGE BASE DATA =====
 const knowledgeBase = {
     'alan-chen': {
         title: 'Alan Chen Knowledge Base',
@@ -1734,13 +1873,81 @@ function getChannelTagClass(channel) {
     return `tag-${type}`;
 }
 
+// ===== SEARCH FUNCTIONALITY =====
+function initSearchFunctionality() {
+    const macroSearch = document.getElementById('macroSearch');
+    const intelSearch = document.getElementById('intelSearch');
+
+    if (macroSearch) {
+        macroSearch.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            filterAndRenderMacroVideos(query);
+        });
+    }
+
+    if (intelSearch) {
+        intelSearch.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            filterAndRenderIntelVideos(query);
+        });
+    }
+}
+
+function filterAndRenderMacroVideos(query) {
+    const container = document.getElementById('macro-video-list');
+    if (!container) return;
+
+    let videos = videoData.filter(v => {
+        const type = getChannelType(v.channel);
+        return (type === 'nicolas' || type === 'alan');
+    });
+
+    if (query) {
+        videos = videos.filter(v => 
+            v.title.toLowerCase().includes(query) ||
+            v.content_overview.toLowerCase().includes(query)
+        );
+    }
+
+    videos.sort((a, b) => b.pub_date.localeCompare(a.pub_date));
+
+    if (videos.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-text">No videos found</div></div>';
+        return;
+    }
+
+    container.innerHTML = videos.map(v => createVideoCard(v)).join('');
+}
+
+function filterAndRenderIntelVideos(query) {
+    const container = document.getElementById('intel-video-list');
+    if (!container) return;
+
+    let videos = videoData.filter(v => getChannelType(v.channel) === 'alex');
+
+    if (query) {
+        videos = videos.filter(v => 
+            v.title.toLowerCase().includes(query) ||
+            v.content_overview.toLowerCase().includes(query)
+        );
+    }
+
+    videos.sort((a, b) => b.pub_date.localeCompare(a.pub_date));
+
+    if (videos.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-text">No intel found</div></div>';
+        return;
+    }
+
+    container.innerHTML = videos.map(v => createVideoCard(v)).join('');
+}
+
 // ===== RENDER VIDEO CARDS =====
 function createVideoCard(video) {
     const channelType = getChannelType(video.channel);
     const channelName = getChannelDisplayName(video.channel);
     const tagClass = getChannelTagClass(video.channel);
 
-    // Tickers HTML
     let tickersHtml = '';
     if (video.tickers && video.tickers.length > 0) {
         const tickerBadges = video.tickers.slice(0, 5).map(t => {
@@ -1761,7 +1968,7 @@ function createVideoCard(video) {
             <div class="video-footer">
                 ${tickersHtml}
                 <a href="${video.url}" target="_blank" rel="noopener" class="video-yt-link" onclick="event.stopPropagation()">
-                    &#9654; YouTube
+                    ▶ YouTube
                 </a>
             </div>
         </div>
@@ -1783,11 +1990,10 @@ function renderMacroVideos(filter = 'all') {
         videos = videos.filter(v => getChannelType(v.channel) === 'alan');
     }
 
-    // Sort by date descending
     videos.sort((a, b) => b.pub_date.localeCompare(a.pub_date));
 
     if (videos.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128269;</div><div class="empty-state-text">No videos found</div></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📹</div><div class="empty-state-text">No videos found</div></div>';
         return;
     }
 
@@ -1802,7 +2008,7 @@ function renderIntelVideos() {
     videos.sort((a, b) => b.pub_date.localeCompare(a.pub_date));
 
     if (videos.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128269;</div><div class="empty-state-text">No intel data found</div></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔬</div><div class="empty-state-text">No intel data found</div></div>';
         return;
     }
 
@@ -1820,7 +2026,6 @@ function openVideoModal(videoId) {
 
     titleEl.textContent = video.title;
 
-    // Build modal body
     let html = '';
 
     // Channel & Date
@@ -1899,7 +2104,7 @@ function openVideoModal(videoId) {
     // YouTube Link
     html += `<div class="modal-section" style="text-align:center;padding-top:8px;">
         <a href="${video.url}" target="_blank" rel="noopener" class="modal-yt-btn">
-            &#9654; Watch on YouTube
+            ▶ Watch on YouTube
         </a>
     </div>`;
 
@@ -1936,10 +2141,8 @@ function toggleKnowledge(id) {
         return;
     }
 
-    // Close all others
     document.querySelectorAll('.knowledge-expand').forEach(k => k.classList.remove('active'));
 
-    // Load content
     const kb = knowledgeBase[id];
     if (kb) {
         el.innerHTML = `<pre>${escapeHtml(kb.content)}</pre>`;
@@ -1957,9 +2160,6 @@ function escapeHtml(text) {
 }
 
 // ===== REAL-TIME MARKET DATA =====
-// 資料來源：Cloudflare Pages Function /api/market（邊緣節點代抓 Yahoo Finance + Fear&Greed）
-// 不再依賴第三方 CORS proxy，100% Cloudflare 基礎設施
-
 function applyQuote(valueId, changeId, q, opts = {}) {
     const valueEl = document.getElementById(valueId);
     const changeEl = document.getElementById(changeId);
@@ -1975,7 +2175,7 @@ function applyQuote(valueId, changeId, q, opts = {}) {
     }
 
     const decimals = opts.decimals ?? 2;
-    const inverseColor = opts.inverseColor === true; // VIX 漲=紅（壞）
+    const inverseColor = opts.inverseColor === true;
     if (valueEl) valueEl.textContent = q.price.toFixed(decimals);
     if (changeEl) {
         const sign = q.changePct >= 0 ? '+' : '';
@@ -2019,7 +2219,6 @@ async function fetchMarketData() {
         applyQuote('usdtwd-value', 'usdtwd-change', d.usdtwd, { decimals: 3 });
         applyFNG('fng-value', 'fng-change', d.fearGreed);
 
-        // 擴充卡片（若 index.html 存在對應 id 就會填入）
         applyQuote('spy-value', 'spy-change', d.spy);
         applyQuote('qqq-value', 'qqq-change', d.qqq);
         applyQuote('voo-value', 'voo-change', d.voo);
@@ -2044,5 +2243,5 @@ async function fetchMarketData() {
     }
 }
 
-// Refresh market data every 90 seconds (Cloudflare edge caches 60s)
+// Refresh market data every 90 seconds
 setInterval(fetchMarketData, 90 * 1000);
