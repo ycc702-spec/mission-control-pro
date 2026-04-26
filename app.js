@@ -12,25 +12,199 @@ document.addEventListener('DOMContentLoaded', () => {
     initSearchFunctionality();
 });
 
-// ===== AUDIO SYSTEM - Web Audio API Synthesized JARVIS Ambient =====
-let audioContext = null;
-let oscillators = [];
+// ===== AUDIO SYSTEM - HTML5 Audio with Real JARVIS Ambient Music =====
+const JARVIS_MUSIC_URL = 'https://pub-073128b2334d45f995dbaf2f0e148bb2.r2.dev/audio/jarvis_ambient.mp3';
+let jarvisAudio = null;
 let isAudioPlaying = false;
+let audioInitialized = false;
 
 function initAudioSystem() {
-    const audioBtn = document.getElementById('audioToggle');
-    if (!audioBtn) return;
+    // Create the HTML5 Audio element
+    jarvisAudio = new Audio(JARVIS_MUSIC_URL);
+    jarvisAudio.loop = true;
+    jarvisAudio.volume = 0.35;
+    jarvisAudio.preload = 'auto';
 
-    audioBtn.addEventListener('click', toggleAudio);
-    
-    // Try to start audio on first user interaction
-    document.addEventListener('click', startAudioOnFirstInteraction, { once: true });
+    // Audio toggle button
+    const audioBtn = document.getElementById('audioToggle');
+    if (audioBtn) {
+        audioBtn.addEventListener('click', toggleAudio);
+    }
+
+    // Show the ACTIVATE JARVIS overlay
+    showActivationOverlay();
 }
 
-function startAudioOnFirstInteraction() {
-    if (!isAudioPlaying && audioContext) {
-        resumeAudio();
-    }
+function showActivationOverlay() {
+    // Create the full-screen activation overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'jarvisActivation';
+    overlay.innerHTML = `
+        <div class="jarvis-activation-content">
+            <div class="jarvis-arc-reactor">
+                <div class="arc-ring arc-ring-1"></div>
+                <div class="arc-ring arc-ring-2"></div>
+                <div class="arc-ring arc-ring-3"></div>
+                <div class="arc-core"></div>
+            </div>
+            <div class="jarvis-activation-title">TACTICAL OS V2.6</div>
+            <div class="jarvis-activation-subtitle">JARVIS COMMAND CENTER</div>
+            <button class="jarvis-activate-btn" id="activateJarvisBtn">
+                <span class="activate-icon">&#9654;</span>
+                <span class="activate-text">ACTIVATE JARVIS</span>
+            </button>
+            <div class="jarvis-activation-hint">Click to initialize system &amp; enable ambient audio</div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    // Inject activation overlay styles
+    const style = document.createElement('style');
+    style.textContent = `
+        #jarvisActivation {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 99999;
+            background: radial-gradient(ellipse at center, #0a1628 0%, #050a14 70%, #000 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            cursor: pointer;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        #jarvisActivation.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .jarvis-activation-content {
+            text-align: center;
+            animation: fadeInUp 1s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .jarvis-arc-reactor {
+            width: 120px; height: 120px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+        .arc-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 210, 211, 0.4);
+        }
+        .arc-ring-1 {
+            top: 0; left: 0; right: 0; bottom: 0;
+            animation: arcSpin 4s linear infinite;
+            border-top-color: #0abde3;
+            border-right-color: transparent;
+        }
+        .arc-ring-2 {
+            top: 15px; left: 15px; right: 15px; bottom: 15px;
+            animation: arcSpin 3s linear infinite reverse;
+            border-bottom-color: #00d2d3;
+            border-left-color: transparent;
+        }
+        .arc-ring-3 {
+            top: 30px; left: 30px; right: 30px; bottom: 30px;
+            animation: arcSpin 2s linear infinite;
+            border-top-color: #48dbfb;
+            border-right-color: transparent;
+        }
+        .arc-core {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px; height: 30px;
+            background: radial-gradient(circle, #48dbfb, #0abde3, transparent);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(10, 189, 227, 0.6), 0 0 60px rgba(10, 189, 227, 0.3);
+            animation: corePulse 2s ease-in-out infinite;
+        }
+        @keyframes arcSpin { to { transform: rotate(360deg); } }
+        @keyframes corePulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(10, 189, 227, 0.6), 0 0 60px rgba(10, 189, 227, 0.3); }
+            50% { box-shadow: 0 0 50px rgba(10, 189, 227, 0.8), 0 0 100px rgba(10, 189, 227, 0.5); }
+        }
+        .jarvis-activation-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #e8eaf0;
+            letter-spacing: 6px;
+            margin-bottom: 8px;
+        }
+        .jarvis-activation-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #0abde3;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
+        }
+        .jarvis-activate-btn {
+            background: rgba(0, 210, 211, 0.1);
+            border: 2px solid rgba(0, 210, 211, 0.5);
+            border-radius: 8px;
+            padding: 16px 40px;
+            color: #0abde3;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            animation: btnPulse 2s ease-in-out infinite;
+        }
+        .jarvis-activate-btn:hover {
+            background: rgba(0, 210, 211, 0.2);
+            border-color: #0abde3;
+            box-shadow: 0 0 20px rgba(10, 189, 227, 0.4), 0 0 40px rgba(10, 189, 227, 0.2);
+            transform: scale(1.05);
+        }
+        @keyframes btnPulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(10, 189, 227, 0.2); }
+            50% { box-shadow: 0 0 20px rgba(10, 189, 227, 0.4), 0 0 40px rgba(10, 189, 227, 0.15); }
+        }
+        .activate-icon { font-size: 1.2rem; }
+        .jarvis-activation-hint {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: rgba(136, 146, 176, 0.6);
+            margin-top: 20px;
+            letter-spacing: 2px;
+        }
+        @media (max-width: 480px) {
+            .jarvis-activation-title { font-size: 1.3rem; letter-spacing: 3px; }
+            .jarvis-activation-subtitle { font-size: 0.7rem; letter-spacing: 2px; }
+            .jarvis-activate-btn { font-size: 0.9rem; padding: 14px 30px; }
+            .jarvis-arc-reactor { width: 90px; height: 90px; }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Handle activation click
+    const activateBtn = document.getElementById('activateJarvisBtn');
+    const handleActivation = () => {
+        // Start playing music
+        startAudio();
+        // Fade out overlay
+        overlay.classList.add('fade-out');
+        setTimeout(() => {
+            overlay.remove();
+            style.remove();
+        }, 900);
+    };
+
+    activateBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        handleActivation();
+    });
+    overlay.addEventListener('click', handleActivation);
 }
 
 function toggleAudio() {
@@ -42,111 +216,38 @@ function toggleAudio() {
 }
 
 function startAudio() {
-    if (isAudioPlaying) return;
-
-    if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
-
-    if (audioContext.state === 'suspended') {
-        audioContext.resume();
-    }
-
-    isAudioPlaying = true;
-    updateAudioButtonUI();
-    createJARVISAmbient();
+    if (!jarvisAudio) return;
+    jarvisAudio.play().then(() => {
+        isAudioPlaying = true;
+        audioInitialized = true;
+        updateAudioButtonUI();
+    }).catch(err => {
+        console.warn('Audio playback failed:', err);
+        // If autoplay blocked, will try again on next user click
+    });
 }
 
 function stopAudio() {
-    if (!isAudioPlaying) return;
-
-    oscillators.forEach(osc => {
-        try {
-            osc.stop();
-        } catch (e) {}
-    });
-    oscillators = [];
-
+    if (!jarvisAudio) return;
+    jarvisAudio.pause();
     isAudioPlaying = false;
     updateAudioButtonUI();
-}
-
-function resumeAudio() {
-    if (audioContext && audioContext.state === 'suspended') {
-        audioContext.resume();
-    }
 }
 
 function updateAudioButtonUI() {
     const audioBtn = document.getElementById('audioToggle');
     const statusEl = audioBtn?.querySelector('.audio-status');
+    const iconEl = audioBtn?.querySelector('.audio-icon');
     if (statusEl) {
         statusEl.textContent = isAudioPlaying ? 'ON' : 'OFF';
     }
-}
-
-function createJARVISAmbient() {
-    if (!audioContext) return;
-
-    const now = audioContext.currentTime;
-    const masterGain = audioContext.createGain();
-    masterGain.gain.setValueAtTime(0.15, now);
-    masterGain.connect(audioContext.destination);
-
-    // Low frequency hum (JARVIS signature)
-    const hum = audioContext.createOscillator();
-    hum.frequency.setValueAtTime(55, now);
-    hum.type = 'sine';
-    const humGain = audioContext.createGain();
-    humGain.gain.setValueAtTime(0.1, now);
-    hum.connect(humGain);
-    humGain.connect(masterGain);
-    hum.start(now);
-    oscillators.push(hum);
-
-    // Filtered noise for atmosphere
-    const noiseBuffer = audioContext.createBuffer(1, audioContext.sampleRate * 2, audioContext.sampleRate);
-    const noiseData = noiseBuffer.getChannelData(0);
-    for (let i = 0; i < noiseBuffer.length; i++) {
-        noiseData[i] = Math.random() * 2 - 1;
-    }
-    const noiseSource = audioContext.createBufferSource();
-    noiseSource.buffer = noiseBuffer;
-    noiseSource.loop = true;
-    const noiseFilter = audioContext.createBiquadFilter();
-    noiseFilter.type = 'lowpass';
-    noiseFilter.frequency.setValueAtTime(300, now);
-    const noiseGain = audioContext.createGain();
-    noiseGain.gain.setValueAtTime(0.05, now);
-    noiseSource.connect(noiseFilter);
-    noiseFilter.connect(noiseGain);
-    noiseGain.connect(masterGain);
-    noiseSource.start(now);
-
-    // Periodic sci-fi beeps
-    for (let i = 0; i < 3; i++) {
-        setTimeout(() => {
-            if (!isAudioPlaying || !audioContext) return;
-            const beepTime = audioContext.currentTime;
-            const beep = audioContext.createOscillator();
-            beep.frequency.setValueAtTime(800 + i * 200, beepTime);
-            beep.type = 'sine';
-            const beepGain = audioContext.createGain();
-            beepGain.gain.setValueAtTime(0.08, beepTime);
-            beepGain.gain.exponentialRampToValueAtTime(0.01, beepTime + 0.1);
-            beep.connect(beepGain);
-            beepGain.connect(masterGain);
-            beep.start(beepTime);
-            beep.stop(beepTime + 0.1);
-        }, i * 2000);
-    }
-
-    // Loop the ambient sound
-    setTimeout(() => {
+    if (iconEl) {
         if (isAudioPlaying) {
-            createJARVISAmbient();
+            iconEl.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.26 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
+        } else {
+            iconEl.innerHTML = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
         }
-    }, 120000); // Restart every 2 minutes
+    }
 }
 
 // ===== NAVIGATION =====
