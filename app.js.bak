@@ -250,14 +250,6 @@ function updateAudioButtonUI() {
     }
 }
 
-
-// Initialize personalization
-updateGreeting();
-setInterval(updateGreeting, 60000); // Update every minute
-fetchWeather();
-setInterval(fetchWeather, 600000); // Update every 10 minutes
-initUploadAccess();
-
 // ===== NAVIGATION =====
 function initNavigation() {
     const navItems = document.querySelectorAll('.nav-item');
@@ -2325,213 +2317,30 @@ async function fetchMarketData() {
         const d = body?.data || {};
 
         applyQuote('vix-value', 'vix-change', d.vix, { decimals: 2, inverseColor: true });
-        applyQuote('taiex-value', 'taiex-change', d.taiex);
-        applyQuote('sp500-value', 'sp500-change', d.sp500);
         applyQuote('usdtwd-value', 'usdtwd-change', d.usdtwd, { decimals: 3 });
         applyFNG('fng-value', 'fng-change', d.fearGreed);
 
         applyQuote('spy-value', 'spy-change', d.spy);
         applyQuote('qqq-value', 'qqq-change', d.qqq);
         applyQuote('voo-value', 'voo-change', d.voo);
-        applyQuote('vti-value', 'vti-change', d.vti);
-        applyQuote('vxus-value', 'vxus-change', d.vxus);
-        
-        // Portfolio cards
-        applyQuote('portfolio-voo', 'portfolio-voo-change', d.voo);
-        applyQuote('portfolio-qqq', 'portfolio-qqq-change', d.qqq);
-        applyQuote('portfolio-vti', 'portfolio-vti-change', d.vti);
-        applyQuote('portfolio-vxus', 'portfolio-vxus-change', d.vxus);
+        applyQuote('nvda-value', 'nvda-change', d.nvda);
+        applyQuote('tsm-value', 'tsm-change', d.tsm);
+        applyQuote('tsla-value', 'tsla-change', d.tsla);
+        applyQuote('smh-value', 'smh-change', d.smh);
+        applyQuote('pave-value', 'pave-change', d.pave);
+        applyQuote('gold-value', 'gold-change', d.gold);
+        applyQuote('oil-value', 'oil-change', d.oil);
     } catch (e) {
         console.warn('market fetch failed:', e);
-    }
-}
-
-
-// ===== PERSONALIZATION =====
-function updateGreeting() {
-    const now = new Date();
-    const hour = now.getHours();
-    let greeting = 'Good morning, Commander';
-    if (hour >= 12 && hour < 18) greeting = 'Good afternoon, Commander';
-    else if (hour >= 18) greeting = 'Good evening, Commander';
-    
-    const greetingEl = document.getElementById('greetingText');
-    if (greetingEl) greetingEl.textContent = greeting;
-    
-    const timeEl = document.getElementById('greetingTime');
-    if (timeEl) {
-        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
-        timeEl.textContent = timeStr;
-    }
-}
-
-// ===== WEATHER API =====
-async function fetchWeather() {
-    try {
-        // 使用 Open-Meteo (free, no API key required)
-        const lat = 24.8136, lon = 120.9555; // Hsinchu, Taiwan
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=Asia/Taipei`;
-        const resp = await fetch(url, { signal: AbortSignal.timeout(10000) });
-        if (!resp.ok) throw new Error('weather api failed');
-        const data = await resp.json();
-        const current = data.current;
-        
-        const weatherIconEl = document.getElementById('weatherIcon');
-        const weatherTempEl = document.getElementById('weatherTemp');
-        
-        if (weatherTempEl) weatherTempEl.textContent = Math.round(current.temperature_2m) + '°C';
-        
-        // Map weather code to emoji
-        const code = current.weather_code;
-        let emoji = '🌤️';
-        if (code === 0) emoji = '☀️';
-        else if (code === 1 || code === 2) emoji = '🌤️';
-        else if (code === 3) emoji = '☁️';
-        else if (code >= 45 && code <= 48) emoji = '🌫️';
-        else if (code >= 51 && code <= 67) emoji = '🌧️';
-        else if (code >= 80 && code <= 82) emoji = '🌧️';
-        else if (code >= 85 && code <= 86) emoji = '❄️';
-        
-        if (weatherIconEl) weatherIconEl.textContent = emoji;
-    } catch (e) {
-        console.warn('weather fetch failed:', e);
-    }
-}
-
-// ===== UPLOAD PAGE ACCESS CODE =====
-function initUploadAccess() {
-    const accessOverlay = document.getElementById('uploadAccessOverlay');
-    const uploadInterface = document.getElementById('uploadInterface');
-    const accessBtn = document.getElementById('uploadAccessBtn');
-    const accessInput = document.getElementById('uploadAccessCode');
-    
-    if (!accessBtn) return;
-    
-    accessBtn.addEventListener('click', () => {
-        const code = accessInput.value.trim();
-        if (code === 'pupu') {
-            accessOverlay.style.display = 'none';
-            uploadInterface.style.display = 'block';
-            initUploadFunctionality();
-        } else {
-            accessInput.value = '';
-            accessInput.placeholder = 'Wrong code. Try again.';
-            setTimeout(() => {
-                accessInput.placeholder = 'Enter access code...';
-            }, 2000);
-        }
-    });
-    
-    accessInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') accessBtn.click();
-    });
-}
-
-// ===== UPLOAD FUNCTIONALITY =====
-function initUploadFunctionality() {
-    const dropZone = document.getElementById('uploadDropZone');
-    const fileInput = document.getElementById('uploadFileInput');
-    const uploadBtn = document.querySelector('.upload-btn');
-    const progressDiv = document.getElementById('uploadProgress');
-    const resultDiv = document.getElementById('uploadResult');
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
-    const resultUrl = document.getElementById('resultUrl');
-    const copyBtn = document.getElementById('copyUrlBtn');
-    
-    if (!dropZone) return;
-    
-    // Drag and drop
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.style.borderColor = '#0abd e3';
-        dropZone.style.backgroundColor = 'rgba(10, 189, 227, 0.1)';
-    });
-    
-    dropZone.addEventListener('dragleave', () => {
-        dropZone.style.borderColor = '';
-        dropZone.style.backgroundColor = '';
-    });
-    
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.style.borderColor = '';
-        dropZone.style.backgroundColor = '';
-        const files = e.dataTransfer.files;
-        if (files.length > 0) uploadFile(files[0]);
-    });
-    
-    // Click to select
-    dropZone.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) uploadFile(e.target.files[0]);
-    });
-    
-    // Copy URL button
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            resultUrl.select();
-            document.execCommand('copy');
-            copyBtn.textContent = '✅ COPIED';
-            setTimeout(() => {
-                copyBtn.textContent = '📋 COPY';
-            }, 2000);
-        });
-    }
-}
-
-async function uploadFile(file) {
-    const folder = document.getElementById('uploadFolder').value;
-    const progressDiv = document.getElementById('uploadProgress');
-    const resultDiv = document.getElementById('uploadResult');
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
-    const resultUrl = document.getElementById('resultUrl');
-    
-    progressDiv.style.display = 'block';
-    resultDiv.style.display = 'none';
-    progressFill.style.width = '0%';
-    progressText.textContent = 'Uploading ' + file.name + '...';
-    
-    try {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('folder', folder);
-        
-        const xhr = new XMLHttpRequest();
-        
-        xhr.upload.addEventListener('progress', (e) => {
-            if (e.lengthComputable) {
-                const percentComplete = (e.loaded / e.total) * 100;
-                progressFill.style.width = percentComplete + '%';
-                progressText.textContent = Math.round(percentComplete) + '%';
+        ['vix', 'usdtwd', 'fng'].forEach(k => {
+            const vv = document.getElementById(k + '-value');
+            const cc = document.getElementById(k + '-change');
+            if (vv && vv.textContent === '') vv.textContent = '--';
+            if (cc && cc.textContent === '') {
+                cc.textContent = 'View Live ↗';
+                cc.className = 'card-change neutral';
             }
         });
-        
-        xhr.addEventListener('load', () => {
-            if (xhr.status === 200) {
-                const response = JSON.parse(xhr.responseText);
-                if (response.ok && response.url) {
-                    progressDiv.style.display = 'none';
-                    resultDiv.style.display = 'block';
-                    resultUrl.value = response.url;
-                } else {
-                    throw new Error(response.error || 'Upload failed');
-                }
-            } else {
-                throw new Error('Upload failed: ' + xhr.status);
-            }
-        });
-        
-        xhr.addEventListener('error', () => {
-            throw new Error('Network error');
-        });
-        
-        xhr.open('POST', '/api/upload');
-        xhr.send(formData);
-    } catch (e) {
-        progressDiv.style.display = 'none';
-        alert('Upload failed: ' + e.message);
     }
 }
 

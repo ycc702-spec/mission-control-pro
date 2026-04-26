@@ -1,0 +1,19 @@
+name = "tactical-os"
+main = "functions"
+compatibility_date = "2024-04-01"
+
+[env.production]
+name = "tactical-os"
+routes = [
+  { pattern = "pupubot-mc.uk/*", zone_name = "pupubot-mc.uk" }
+]
+
+[[r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "pupubot-storage"
+account_id = "b9828716775e15f7d5b8c5f8bf4d678e"
+jurisdiction = "eu"
+
+[build]
+command = "npm install"
+cwd = "./"
